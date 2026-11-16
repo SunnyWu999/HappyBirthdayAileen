@@ -1,0 +1,186 @@
+/* 第二十号档案 · 样式 —— 深蓝法庭 + 纸质卷宗 */
+:root {
+  --navy: #1b2a4a;
+  --navy-2: #24365c;
+  --gold: #c9a227;
+  --paper: #fbf7ee;
+  --paper-edge: #e8dfc9;
+  --ink: #23201b;
+  --red: #b3261e;
+  --green: #2e7d4f;
+  --muted: #6b6558;
+  --serif: "Songti SC", "Noto Serif SC", "Source Han Serif SC", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: radial-gradient(ellipse at top, var(--navy-2), var(--navy) 60%) fixed;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+#app { max-width: 680px; margin: 0 auto; padding: 0 14px 40px; }
+
+/* 顶栏 */
+.topbar { display: flex; align-items: center; gap: 10px; padding: 12px 2px; color: #dfe6f3; font-size: 13px; }
+.caseno { font-family: var(--serif); letter-spacing: .06em; opacity: .8; }
+.role-badge { margin-left: auto; padding: 3px 10px; border-radius: 99px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); }
+.role-badge.counsel { border-color: var(--gold); color: #f3dc8a; }
+.icon-btn { background: none; border: 0; font-size: 20px; cursor: pointer; }
+
+.chapter-head { text-align: center; color: #fff; padding: 10px 0 16px; }
+.chapter-head h1 { font-family: var(--serif); font-size: 26px; margin: 2px 0 8px; letter-spacing: .04em; }
+.ch-sub { font-size: 12px; letter-spacing: .25em; text-transform: uppercase; color: var(--gold); }
+.dots { display: flex; justify-content: center; gap: 8px; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,.25); }
+.dot.done { background: var(--gold); }
+.dot.now { background: #fff; box-shadow: 0 0 0 3px rgba(201,162,39,.5); }
+
+/* 卡片 */
+.card { background: var(--paper); border-radius: 14px; padding: 20px 18px; margin: 12px 0; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
+.card h2, .card h3 { font-family: var(--serif); margin-top: 0; }
+.card.center { text-align: center; }
+.card.note { background: #eef3fb; border-left: 5px solid var(--navy); }
+.prompt { margin-bottom: 14px; }
+.text { margin-bottom: 14px; }
+.muted { color: var(--muted); font-size: 14px; margin: 6px 0; }
+.feedback { background: #fff; border: 1px dashed var(--paper-edge); border-radius: 10px; padding: 12px 14px; margin: 12px 0; }
+.picked { font-weight: 600; margin: 8px 0; color: var(--navy); }
+.row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+.hidden { display: none; }
+
+/* 按钮 */
+.btn { font: inherit; border: 0; border-radius: 10px; padding: 12px 20px; margin-top: 8px; cursor: pointer; font-weight: 600; min-width: 120px; }
+.btn.primary { background: var(--navy); color: #fff; }
+.btn.secondary { background: #fff; color: var(--navy); border: 1.5px solid var(--navy); }
+.btn.danger { background: var(--red); color: #fff; letter-spacing: .1em; }
+.btn:active { transform: translateY(1px); }
+.link { background: none; border: 0; color: inherit; text-decoration: underline; cursor: pointer; font: inherit; }
+.options { display: flex; flex-direction: column; gap: 10px; }
+.opt, .check { font: inherit; text-align: left; background: #fff; border: 1.5px solid var(--paper-edge); border-radius: 10px; padding: 12px 14px; cursor: pointer; color: var(--ink); display: block; width: 100%; margin: 6px 0; }
+.opt:hover, .check:hover { border-color: var(--navy); }
+.opt.on, .check.on { border-color: var(--navy); background: #e8eefb; }
+.check::before { content: "☐ "; }
+.check.on::before { content: "☑ "; }
+.opt.small { padding: 8px 12px; font-size: 15px; }
+.opt.locked { opacity: .45; cursor: not-allowed; }
+.counter-line { font-size: 14px; color: var(--muted); margin-bottom: 6px; }
+
+/* 答辩表格 */
+.arow { border-top: 1px solid var(--paper-edge); padding: 10px 0; }
+.atext { margin-bottom: 6px; }
+.seg { display: flex; gap: 6px; flex-wrap: wrap; }
+.seg-btn { font: inherit; font-size: 14px; flex: 1; min-width: 70px; padding: 8px; border-radius: 8px; border: 1.5px solid var(--paper-edge); background: #fff; cursor: pointer; }
+.seg-btn.on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.result { font-size: 14px; padding: 8px 10px; border-radius: 8px; margin-top: 4px; }
+.result.ok { background: #e7f4ec; color: #1d4d31; }
+.result.bad { background: #fbe9e7; color: #7a1d17; }
+.timer { position: sticky; top: 6px; z-index: 2; background: var(--navy); color: #fff; padding: 8px 12px; border-radius: 8px; margin-bottom: 8px; font-weight: 600; text-align: center; }
+.timer.urgent { background: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .7; } }
+
+.reveal { background: #fff; border-radius: 10px; padding: 10px 14px; margin: 10px 0; border-left: 4px solid var(--gold); }
+.reveal .q { font-weight: 600; }
+.qblock { margin: 12px 0; }
+.qblock .q { font-weight: 600; margin-bottom: 4px; }
+
+/* 纸质文件 */
+.doc-label { color: #f3dc8a; font-size: 13px; letter-spacing: .1em; margin: 18px 4px 6px; }
+.paper { background: var(--paper); background-image: linear-gradient(transparent 31px, rgba(27,42,74,.04) 32px); background-size: 100% 32px; font-family: var(--serif); padding: 26px 22px; border-radius: 4px; box-shadow: 0 12px 30px rgba(0,0,0,.35); border-top: 6px solid var(--navy); margin-bottom: 10px; }
+.paper h3 { text-align: center; letter-spacing: .04em; margin: 14px 0; }
+.doc-court { text-align: center; font-size: 13px; letter-spacing: .08em; margin: 0 0 10px; }
+.doc-caption { text-align: center; }
+.doc-caseno { text-align: right; font-size: 14px; }
+.doc-zh { background: rgba(201,162,39,.12); padding: 8px 12px; border-radius: 6px; font-family: var(--sans); }
+.doc-paras li { margin-bottom: 8px; }
+.doc-sign { text-align: right; font-style: italic; }
+.doc-seal { text-align: right; color: var(--red); font-weight: 700; }
+.doc-footnote { font-size: 12px; color: var(--muted); font-family: var(--sans); margin-top: 16px; }
+.lawlib dt { font-weight: 700; margin-top: 10px; color: var(--navy); }
+.lawlib dd { margin: 2px 0 0 0; font-family: var(--sans); font-size: 15px; }
+.crayon { font-family: "Comic Sans MS", "Chalkboard SE", "Kaiti SC", cursive; color: #8a3b12; background: #fff8dc; border: 2px dashed #e0b96a; border-radius: 10px; padding: 14px; transform: rotate(-.6deg); margin: 10px 0; }
+.crayon.big { font-size: 20px; text-align: center; line-height: 1.8; }
+.crayon .tiny { font-size: 12px; color: #a0623b; }
+.post { background: #fff; border: 1px solid #ddd; border-radius: 12px; padding: 12px; font-family: var(--sans); }
+.formula { text-align: center; font-weight: 700; background: #fff; padding: 8px; border-radius: 6px; }
+blockquote { border-left: 4px solid var(--gold); margin: 10px 0; padding: 6px 14px; background: rgba(201,162,39,.08); }
+
+/* 密码 */
+.code-card .code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 40px; letter-spacing: .25em; color: var(--navy); background: #fff; border: 3px double var(--navy); border-radius: 10px; padding: 12px; margin: 10px auto; display: inline-block; min-width: 60%; }
+.lock { font-size: 42px; }
+.code-input { font: inherit; font-size: 24px; text-align: center; letter-spacing: .2em; text-transform: uppercase; width: 100%; max-width: 280px; padding: 10px; border: 2px solid var(--navy); border-radius: 10px; display: block; margin: 6px auto; }
+.shake { animation: shake .4s; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+.big-num { font-size: 64px; font-weight: 800; color: var(--navy); font-family: var(--serif); }
+
+/* 陪审员 */
+.jurors { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.juror { font: inherit; background: #fff; border: 1.5px solid var(--paper-edge); border-radius: 10px; padding: 10px; text-align: left; cursor: pointer; position: relative; color: var(--ink); }
+.juror.struck { background: #fbe9e7; border-color: var(--red); }
+.juror.struck .jn { text-decoration: line-through; }
+.jn { font-weight: 700; }
+.jj { font-size: 13px; color: var(--muted); }
+.jtag { font-size: 12px; margin-top: 4px; font-weight: 700; }
+.jtag.bad { color: var(--red); }
+.jtag.ok { color: var(--green); }
+
+/* 异议 */
+.transcript { background: #fff; border-radius: 10px; padding: 10px 12px; max-height: 360px; overflow-y: auto; font-family: var(--serif); border: 1px solid var(--paper-edge); }
+.tline { padding: 6px 0; border-bottom: 1px dotted var(--paper-edge); }
+.judge { font-family: var(--sans); font-size: 14px; padding: 6px 10px; margin: 4px 0; border-radius: 6px; }
+.judge.ok { background: #e7f4ec; }
+.judge.bad { background: #fbe9e7; }
+.judge.miss { color: var(--muted); font-style: italic; }
+.controls { margin-top: 10px; text-align: center; }
+.objection-flash { animation: flash .8s; }
+@keyframes flash { 0% { box-shadow: 0 0 0 0 rgba(179,38,30,.9); } 100% { box-shadow: 0 0 0 30px rgba(179,38,30,0); } }
+
+/* 印章 */
+.stamp { display: inline-block; border: 4px double var(--red); color: var(--red); font-family: var(--serif); font-weight: 800; letter-spacing: .3em; padding: 6px 16px; transform: rotate(-6deg); margin: 6px 0 12px; }
+.stamp.big { font-size: 28px; }
+.seal-red { display: inline-block; border: 3px solid var(--red); color: var(--red); border-radius: 50%; padding: 14px 10px; font-size: 12px; text-align: center; transform: rotate(-10deg); line-height: 1.3; vertical-align: middle; }
+.verdict h2 { font-size: 24px; }
+
+/* 签名与判决 */
+.sigpad { width: 100%; max-width: 520px; height: auto; aspect-ratio: 600 / 220; background: #fff; border: 2px dashed var(--navy); border-radius: 10px; touch-action: none; }
+.sig-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; text-align: center; }
+.sig { width: 100%; max-height: 80px; object-fit: contain; border-bottom: 1px solid var(--ink); }
+.sig.empty { height: 60px; border-bottom: 1px solid var(--ink); }
+.sig-label { font-size: 13px; margin-top: 4px; }
+.judge-line { margin-top: 20px; }
+.photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.photos img, .preview img { width: 100%; border-radius: 6px; }
+.preview img { max-width: 260px; margin: 8px auto; display: block; }
+
+/* 信 */
+.envelope { font: inherit; background: #f1e4c3; border: 0; border-radius: 10px; width: 100%; padding: 40px 10px; cursor: pointer; box-shadow: inset 0 0 0 2px #d8c595; color: #6a5420; font-weight: 600; }
+.env-seal { width: 64px; height: 64px; margin: 0 auto 10px; border-radius: 50%; background: var(--red); color: #fff; font-family: var(--serif); font-size: 30px; line-height: 64px; box-shadow: 0 3px 8px rgba(0,0,0,.3); }
+.letter { white-space: pre-wrap; text-align: left; font-size: 17px; line-height: 1.9; }
+.gift { margin-top: 12px; background: #fff3cd; border-radius: 10px; padding: 12px; font-weight: 600; }
+
+/* 首页 */
+.landing { text-align: center; color: #fff; padding: 60px 10px; }
+.landing h1 { font-family: var(--serif); font-size: 40px; margin: 8px 0; letter-spacing: .1em; }
+.landing .lead { color: #f3dc8a; font-family: var(--serif); }
+.seal-big { font-size: 64px; color: var(--gold); }
+.role-pick { display: flex; flex-direction: column; gap: 10px; max-width: 340px; margin: 28px auto; }
+.landing .doc-footnote { color: rgba(255,255,255,.6); }
+
+.foot { color: rgba(255,255,255,.55); font-size: 12px; text-align: center; padding: 24px 6px; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #222; color: #fff; padding: 10px 16px; border-radius: 99px; font-size: 14px; z-index: 99; max-width: 90vw; }
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+.modal-inner { background: var(--paper); border-radius: 14px; padding: 20px; width: 100%; max-width: 420px; }
+
+/* 打印：只打印判决书或卷宗 */
+@media print {
+  body { background: #fff; }
+  .topbar, .chapter-head, .foot, .noprint, .card, .btn { display: none !important; }
+  body[data-print] .printable { display: none; }
+  body[data-print="judgment"] .printable:has(.judgment),
+  body[data-print="dossier"] .printable:has(.dossier) { display: block; }
+  .paper { box-shadow: none; background-image: none; }
+  .doc-label { color: #000; }
+}

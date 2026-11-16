@@ -296,3 +296,55 @@ body::before { content: ""; position: fixed; left: 50%; top: -18vh; width: 120vw
 .ch-place { letter-spacing: .1em; }
 .postcard { box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 0 50px rgba(139,94,52,.3) inset, 0 20px 40px rgba(0,0,0,.55); }
 .postcard::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 92% 8%, rgba(60,30,10,.18) 0 18px, transparent 19px), radial-gradient(circle at 6% 94%, rgba(60,30,10,.12) 0 30px, transparent 31px); }
+
+/* ---------- 物证袋 ---------- */
+.bag-step { margin: 18px 0; text-align: center; }
+.bag-shelf { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.bag-shelf.one { grid-template-columns: minmax(0, 340px); justify-content: center; }
+@media (max-width: 420px) { .bag-step .bag-shelf { grid-template-columns: 1fr; } }
+.bag { position: relative; cursor: zoom-in; text-align: left; padding: 22px 12px 12px; border-radius: 4px 4px 10px 10px;
+  background: linear-gradient(115deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,.05) 35%, rgba(255,255,255,.14) 55%, rgba(255,255,255,.04) 100%), rgba(225,232,236,.16);
+  border: 1px solid rgba(255,255,255,.35); box-shadow: 0 12px 26px rgba(0,0,0,.5), inset 0 0 22px rgba(255,255,255,.12);
+  backdrop-filter: blur(1.5px); transform: rotate(-1deg); transition: transform .25s; }
+.bag:nth-child(even) { transform: rotate(1.2deg); }
+.bag:hover { transform: rotate(0) translateY(-3px); }
+.bag::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(160deg, transparent 40%, rgba(255,255,255,.18) 46%, transparent 52%); }
+.bag-zip { position: absolute; top: 8px; left: 8px; right: 8px; height: 7px; border-radius: 4px; background: repeating-linear-gradient(90deg, rgba(178,34,34,.9) 0 6px, rgba(120,15,15,.9) 6px 8px); box-shadow: 0 1px 0 rgba(255,255,255,.3); }
+.bag-label { background: #f6f3ea; border: 2px solid #b12a2a; border-radius: 2px; margin-bottom: 10px; font-family: -apple-system, "PingFang SC", sans-serif; color: #1d1d1d; }
+.bag-title { display: flex; justify-content: space-between; background: #b12a2a; color: #fff; font-weight: 800; letter-spacing: .25em; font-size: 12px; padding: 3px 8px; }
+.bag-grid { display: grid; grid-template-columns: auto 1fr; gap: 1px 8px; padding: 6px 8px; font-size: 11px; line-height: 1.5; }
+.bag-grid span { color: #8a8a8a; letter-spacing: .08em; }
+.bag-grid b { font-weight: 600; border-bottom: 1px dotted #c9c9c9; font-family: "Homemade Apple", "Ma Shan Zheng", cursive; font-size: 12px; color: #1f2b4d; }
+.bag-content { position: relative; transform: rotate(1.5deg); margin: 6px 4px 8px; box-shadow: 0 4px 10px rgba(0,0,0,.35); background: #fff; }
+.bag-img { display: block; width: 100%; height: auto; border: 6px solid #fff; border-bottom-width: 18px; }
+.bag-art { padding: 2px; background: #fff; }
+.bag-art .crayon { margin: 0; transform: none; box-shadow: none; font-size: 16px; }
+.bag-art .crayon.big { font-size: 17px; }
+.bag-custody { display: flex; justify-content: space-between; align-items: baseline; font-family: -apple-system, sans-serif; font-size: 9px; letter-spacing: .15em; color: rgba(241,226,192,.75); border-top: 1px dashed rgba(241,226,192,.35); padding-top: 4px; }
+.bag-custody i { font-family: "Homemade Apple", cursive; font-size: 12px; letter-spacing: 0; color: var(--parch); }
+.bag.small .bag-grid { font-size: 9px; }
+.bag.small .bag-grid b { font-size: 10px; }
+.bag.small .bag-art { font-size: 12px; }
+.bag-caption { font-family: var(--brush); color: var(--parch); font-size: 20px; margin: 16px 0 4px; line-height: 1.7; }
+.bag-caption b { color: #e06a5a; font-weight: 400; }
+.muted.center { text-align: center; color: rgba(241,226,192,.55); }
+.modal-bag { width: 100%; max-width: 440px; text-align: center; }
+.modal-bag .bag { transform: none; cursor: default; }
+.modal-inner .bag-shelf, .dossier .bag-shelf { grid-template-columns: 1fr 1fr; }
+.dossier .bag-custody, .modal-inner .bag-custody { color: var(--ink-soft); }
+.dossier .bag-custody i, .modal-inner .bag-custody i { color: var(--ink); }
+
+/* 画出来的物证 */
+.ev-diary { background: repeating-linear-gradient(#fffdf6 0 25px, #c9dbe8 25px 26px); padding: 10px 12px 12px 30px; font-family: var(--brush); font-size: 16px; line-height: 26px; color: #2a3a6a; position: relative; }
+.ev-diary::before { content: ""; position: absolute; left: 20px; top: 0; bottom: 0; width: 1px; background: #e8a0a0; }
+.ev-date { color: #8a3b12; }
+.ev-phone { background: #111; border-radius: 16px; padding: 8px; color: #eee; font-family: -apple-system, "PingFang SC", sans-serif; font-size: 12px; }
+.ev-phone-bar { text-align: center; font-size: 10px; opacity: .7; margin-bottom: 6px; }
+.ev-post-img { height: 90px; border-radius: 6px; display: flex; align-items: flex-end; padding: 6px; font-size: 10px; letter-spacing: .1em;
+  background: radial-gradient(circle at 30% 40%, rgba(255,60,160,.7), transparent 40%), radial-gradient(circle at 75% 30%, rgba(80,120,255,.7), transparent 45%), radial-gradient(circle at 50% 90%, rgba(255,200,60,.5), transparent 40%), #1a1030; }
+.ev-post-text { margin: 8px 2px 4px; font-size: 13px; }
+.ev-post-comment { font-size: 11px; opacity: .65; }
+.ev-blur { filter: blur(3px); }
+.ev-transcript { position: relative; background: #fbfbf7; padding: 12px; font-family: "Courier New", "Songti SC", monospace; font-size: 12px; line-height: 1.8; color: #222; }
+.ev-stamp { position: absolute; right: 8px; top: 8px; border: 2px solid #b12a2a; color: #b12a2a; font-size: 10px; letter-spacing: .2em; padding: 1px 6px; transform: rotate(8deg); opacity: .8; }

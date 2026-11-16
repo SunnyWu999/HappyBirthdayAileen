@@ -77,12 +77,44 @@
     if (S.ledger[k]) { S.score = Math.round((S.score - S.ledger[k]) * 10) / 10; delete S.ledger[k]; }
     (S.flagLedger[k] || []).forEach((f) => delete S.flags[f]); delete S.flagLedger[k];
   }
-  const AUTO = (st) => st.type === "award" || (st.type === "exhibitShow" && !S.flags[st.flag]);
+  const AUTO = (st) => st.type === "award" || (st.type === "exhibitShow" && !S.flags[st.flag]) || (st.type === "bag" && !st.noAward && !st.items.some((k) => S.flags[k]));
 
   function toast(msg) {
     const n = el("div", { class: "toast" }, msg);
     document.body.append(n);
     setTimeout(() => n.remove(), 2600);
+  }
+
+  // ---------- 物证袋 ----------
+  const exName = (k) => (typeof EXHIBITS[k] === "string" ? EXHIBITS[k] : EXHIBITS[k].name);
+  function bagEl(spec, opts = {}) {
+    const inner = spec.img
+      ? el("img", { class: "bag-img", src: spec.img, alt: spec.name })
+      : el("div", { class: "bag-art", html: t(spec.html || "") });
+    const b = el("div", { class: "bag" + (opts.small ? " small" : "") },
+      el("div", { class: "bag-zip" }),
+      el("div", { class: "bag-label" },
+        el("div", { class: "bag-title" }, el("span", {}, "EVIDENCE"), el("span", {}, "物证")),
+        el("div", { class: "bag-grid" },
+          el("span", {}, "CASE"), el("b", {}, CONFIG.caseNo),
+          el("span", {}, "ITEM"), el("b", {}, spec.item || "—"),
+          el("span", {}, "描述"), el("b", {}, (spec.name || "").replace(/^\S+\s·\s/, "")),
+          el("span", {}, "地点"), el("b", {}, spec.place || "—"),
+          el("span", {}, "日期"), el("b", {}, spec.date || "—"))),
+      el("div", { class: "bag-content" }, inner),
+      el("div", { class: "bag-custody" }, el("span", {}, "CHAIN OF CUSTODY"), el("i", {}, CONFIG.assistantName)));
+    if (!opts.noZoom) b.addEventListener("click", () => zoomBag(spec));
+    return b;
+  }
+  function zoomBag(spec) {
+    const box = el("div", { class: "modal", onclick: (e) => { if (e.target === box) box.remove(); } },
+      el("div", { class: "modal-bag" }, bagEl(spec, { noZoom: true }), btn("放回卷宗", () => box.remove(), "secondary")));
+    document.body.append(box);
+  }
+  function exSpec(k) { const e = EXHIBITS[k]; return typeof e === "string" ? { name: e, item: k } : e; }
+  function photoSpec(key, src, i) {
+    const ch = CHAPTERS.find((c) => c.id === key);
+    return { name: "现场照片", item: "P" + (i + 1), place: ch ? ch.place : "", date: "2026.11.24", img: src };
   }
 
   // ---------- 布局 ----------
@@ -245,7 +277,7 @@
     const box = el("div", { class: "modal", onclick: (e) => { if (e.target === box) box.remove(); } },
       el("div", { class: "modal-inner" },
         el("h3", {}, "📁 已获得的证物"),
-        owned.length ? el("ul", {}, owned.map((k) => el("li", {}, EXHIBITS[k]))) : el("p", {}, "还没有证物。"),
+        owned.length ? el("div", { class: "bag-shelf" }, owned.map((k) => bagEl(exSpec(k), { small: true }))) : el("p", {}, "还没有证物。"),
         btn("关闭", () => box.remove(), "secondary")
       ));
     document.body.append(box);
@@ -303,6 +335,16 @@
       btn("📍 我到了", check),
       el("button", { class: "link small", onclick: () => overrideBox.classList.toggle("hidden") }, "定位不准？"),
       overrideBox);
+  };
+
+  STEPS.bag = (s, done) => {
+    const items = s.items.filter((k) => s.noAward || S.flags[k]);
+    if (!items.length) { setTimeout(done, 0); return null; }
+    return el("div", { class: "bag-step" },
+      el("div", { class: "bag-shelf" + (items.length === 1 ? " one" : "") }, items.map((k) => bagEl(exSpec(k)))),
+      s.text ? el("div", { class: "bag-caption", html: t(s.text) }) : null,
+      el("div", { class: "muted center" }, "点击物证袋可以放大"),
+      btn("继续", done));
   };
 
   STEPS.whisper = (s, done) => {
@@ -680,7 +722,7 @@
   STEPS.present = (s, done) => {
     const c = card("", el("div", { class: "prompt", html: t(s.prompt) }));
     const list = el("div", { class: "options" });
-    Object.entries(EXHIBITS).forEach(([k, name]) => {
+    Object.keys(EXHIBITS).forEach((k) => { const name = exName(k);
       const owned = !!S.flags[k];
       list.append(el("button", { class: "opt exhibit" + (owned ? "" : " locked"), disabled: owned ? false : "disabled", onclick: () => {
         list.remove();
@@ -776,9 +818,9 @@
         el("h3", {}, "案件卷宗 · " + CONFIG.caseNo),
         el("p", {}, CONFIG.plaintiffName + " v. " + CONFIG.herName),
         el("h4", {}, "证物清单"),
-        el("ul", {}, owned.map((k) => el("li", {}, EXHIBITS[k]))),
+        el("div", { class: "bag-shelf" }, owned.map((k) => bagEl(exSpec(k), { small: true }))),
         el("h4", {}, "证据照片"),
-        photos.length ? el("div", { class: "photos" }, photos.map(([k, src]) => el("img", { src, alt: k }))) : el("p", { class: "muted" }, "（没有拍照片）"),
+        photos.length ? el("div", { class: "bag-shelf" }, photos.map(([k, src], i) => bagEl(photoSpec(k, src, i), { small: true }))) : el("p", { class: "muted" }, "（没有拍照片）"),
         el("p", { class: "muted" }, "最终裁决：" + ((S.verdict && S.verdict.level) || "—"))
       ),
       el("div", { class: "row noprint" },
@@ -816,12 +858,12 @@
         const cv = el("canvas", { width: Math.round(img.width * k), height: Math.round(img.height * k) });
         cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
         S.photos[s.key] = cv.toDataURL("image/jpeg", 0.72); save();
-        preview.innerHTML = ""; preview.append(el("img", { src: S.photos[s.key] }));
+        preview.innerHTML = ""; preview.append(bagEl(photoSpec(s.key, S.photos[s.key], Object.keys(S.photos).indexOf(s.key)), { small: true }), el("div", { class: "muted" }, "已封入物证袋。"));
         URL.revokeObjectURL(img.src);
       };
       img.src = URL.createObjectURL(f);
     });
-    if (S.photos[s.key]) preview.append(el("img", { src: S.photos[s.key] }));
+    if (S.photos[s.key]) preview.append(bagEl(photoSpec(s.key, S.photos[s.key], Object.keys(S.photos).indexOf(s.key)), { small: true }));
     return card("center", el("div", { class: "text", html: t(s.prompt) }), preview, input,
       el("div", { class: "row" }, btn("📸 拍照/选照片", () => input.click(), "secondary"), btn("继续", done)));
   };

@@ -53,11 +53,18 @@ const CONFIG = {
   }
 };
 
+/* 物证：每件证物会装在一个"物证袋"里显示。
+   img：可以放真实照片，例如把照片放进 assets 文件夹，写 "assets/diary.jpg"。
+        留空 "" 就用游戏自己画的版本。                                    */
 const EXHIBITS = {
-  exA: "A · 2016年夏天的日记",
-  exB: "B · 十八岁那晚的帖子",
-  exD: "D · 协议原件",
-  depo: "W · 证人W的证词"
+  exA: { name: "A · 2016年夏天的日记", item: "A", place: "被告的旧书架", date: "2016.07.15", img: "",
+         html: `<div class="ev-diary"><div class="ev-date">7月15日　晴</div>在公园遇见一个朋友。<br>TA不肯说名字。<br>我们拉钩了。<br>我保证永远不长大。<br>TA给了我一颗糖，超好吃。<br>TA说，十年以后会回来找我。</div>` },
+  exB: { name: "B · 十八岁那晚的帖子", item: "B", place: "社交媒体 · 截图", date: "2024.11.24 23:58", img: "",
+         html: `<div class="ev-phone"><div class="ev-phone-bar">23:58</div><div class="ev-post-img">KTV · 包厢 302</div><div class="ev-post-text">18岁了，但我永远是个小孩</div><div class="ev-post-comment">评论 · 1　<span class="ev-blur">████████████</span></div></div>` },
+  exD: { name: "D · 协议原件", item: "D", place: "林肯公园 · Couch 墓门缝", date: "2026.11.24", img: "",
+         html: `<div class="crayon big">永远不长大协议<br><br>我保证永远不长大，<br>每年生日陪你玩。<br><br><span class="tiny">除非我变成一个很酷的大人。</span><br><br>— {her}，十岁</div>` },
+  depo: { name: "W · 证人W的证词", item: "W", place: "林肯公园", date: "2026.11.24", img: "",
+         html: `<div class="ev-transcript"><div class="ev-stamp">DEPOSITION</div>问：那晚你在哪里？<br>答：KTV 包厢。<br>问：她记得那份协议吗？<br>答：不记得。<br>问：门口有人吗？<br>答：……有一个小孩。</div>` }
 };
 
 const CHAPTERS = [
@@ -134,17 +141,14 @@ const CHAPTERS = [
       ] },
     { type: "award", flag: "exA" }, { type: "award", flag: "exB" },
     { type: "whisper", text: "你在最后一页签下名字。<br><br>墨水，比平时红了一点。" },
-    { type: "narration", title: "", text: "收入卷宗：<br><b>证物 A</b> · 2016年夏天的日记<br><b>证物 B</b> · 十八岁那晚的帖子" },
+    { type: "bag", items: ["exA", "exB"], text: "两件物证，封入袋中。" },
     { type: "photo", key: "ch1", prompt: "在红色的影子下，留一张照片。" },
     { type: "codeGive", text: "告诉助手：", code: "ch1_toAssistant" }
   ],
   assistant: [
     { type: "geo", place: "plaza", text: "跟她一起，去广场。" },
-    { type: "document", docTitle: "🔒 证物档案", html: `
-<h3>A · 2016年夏天的日记</h3>
-<div class="crayon">7月15日　晴<br>在公园遇见一个朋友。TA不肯说名字。<br>我们拉钩了。我保证永远不长大。<br>TA给了我一颗糖，超好吃。<br>TA说，十年以后会回来找我。</div>
-<h3>B · 十八岁那晚的帖子</h3>
-<div class="post">"18岁了，但我永远是个小孩"<br><small>2024.11.24　23:58 · 配图：KTV包厢</small></div>
+    { type: "bag", items: ["exA", "exB"], text: "🔒 只有你看得见。她问起时，再念给她听。", noAward: true },
+    { type: "document", docTitle: "🔒 关于 X", html: `
 <h3>X</h3>
 <p>没有照片，没有名字。<br>日记之后的十年，什么记录都没有。</p>
 <p class="doc-footnote">🔑 "它叫什么？"——答案是 FLAMINGO：广场中央那座红色的大钢雕，Calder 的《火烈鸟》。她卡住了，就提示一句："抬头，找红色。"</p>` },
@@ -177,9 +181,7 @@ const CHAPTERS = [
     { type: "gate", text: "门楣上，刻着什么名字？", accept: ["COUCH", "IRA COUCH", "COUCH TOMB"],
       success: "COUCH。<br><br>石门锈死了，铁栏冰凉。<br>门缝里夹着一张泛黄的纸。<br>四周的草都是湿的，<br>只有那张纸，是干的。" },
     { type: "award", flag: "exD" },
-    { type: "exhibitShow", flag: "exD", docTitle: "证物 D · 协议原件", html: `
-<div class="crayon big">永远不长大协议<br><br>我保证永远不长大，<br>每年生日陪你玩。<br><br><span class="tiny">除非我变成一个很酷的大人。</span><br><br>— {her}，十岁</div>
-<p class="doc-zh">最后一行，小得几乎看不见。<br><b>X 从来没有提过它。</b></p>` },
+    { type: "bag", items: ["exD"], text: "最后一行，小得几乎看不见。<br><b>X 从来没有提过它。</b>" },
     { type: "whisper", text: "你感觉到有人在看你。<br><br>是 <b>W</b>。<br>TA 说，十八岁那晚，TA 也在。" },
     { type: "narration", title: "质询", text: "W 由你的助手扮演。<br><br>你最多可以问 <b>二十</b> 个问题。<br>问\"是不是\"，TA 只会答\"是\"或\"不是\"。" },
     { type: "codeGive", text: "告诉助手，请 W 入座：", code: "ch2_toAssistant" },
@@ -191,6 +193,7 @@ const CHAPTERS = [
         { q: "帖子下面，你还补了一句什么？", options: ["什么也没有", "\"但也是一个很酷的大人\"", "\"X，别来找我\""], correct: 1 }
       ], perCorrect: 1 },
     { type: "award", flag: "depo" },
+    { type: "bag", items: ["depo"], text: "证词封存。" },
     { type: "photo", key: "ch2", prompt: "在那扇门前，留一张照片。<br><small>拍完，放大看看。</small>" },
     { type: "whisper", text: "天色暗下来了。<br><br>公园里的那些人，<br>开始出来走动。" }
   ],

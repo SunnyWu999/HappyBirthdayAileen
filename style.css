@@ -348,3 +348,5 @@ body::before { content: ""; position: fixed; left: 50%; top: -18vh; width: 120vw
 .ev-blur { filter: blur(3px); }
 .ev-transcript { position: relative; background: #fbfbf7; padding: 12px; font-family: "Courier New", "Songti SC", monospace; font-size: 12px; line-height: 1.8; color: #222; }
 .ev-stamp { position: absolute; right: 8px; top: 8px; border: 2px solid #b12a2a; color: #b12a2a; font-size: 10px; letter-spacing: .2em; padding: 1px 6px; transform: rotate(8deg); opacity: .8; }
+.ev-post-photo { display: block; width: 100%; height: 150px; object-fit: cover; border-radius: 6px; }
+.doc-photo { display: block; width: 100%; max-width: 320px; margin: 8px auto; border: 6px solid #fff; border-bottom-width: 20px; box-shadow: 0 4px 10px rgba(0,0,0,.3); transform: rotate(-1.5deg); }

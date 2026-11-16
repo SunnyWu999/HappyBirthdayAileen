@@ -57,10 +57,11 @@ const CONFIG = {
    img：可以放真实照片，例如把照片放进 assets 文件夹，写 "assets/diary.jpg"。
         留空 "" 就用游戏自己画的版本。                                    */
 const EXHIBITS = {
-  exA: { name: "A · 2016年夏天的日记", item: "A", place: "被告的旧书架", date: "2016.07.15", img: "",
+  exX: { name: "X · 门口的信封", item: "X", place: "被告家门口", date: "2026.11.24 06:00", img: "assets/sleeve-x.jpg" },
+  exA: { name: "A · 2016年夏天的日记", item: "A", place: "被告的旧书架", date: "2016.07.15", img: "assets/diary.jpg",
          html: `<div class="ev-diary"><div class="ev-date">7月15日　晴</div>在公园遇见一个朋友。<br>TA不肯说名字。<br>我们拉钩了。<br>我保证永远不长大。<br>TA给了我一颗糖，超好吃。<br>TA说，十年以后会回来找我。</div>` },
   exB: { name: "B · 十八岁那晚的帖子", item: "B", place: "社交媒体 · 截图", date: "2024.11.24 23:58", img: "",
-         html: `<div class="ev-phone"><div class="ev-phone-bar">23:58</div><div class="ev-post-img">KTV · 包厢 302</div><div class="ev-post-text">18岁了，但我永远是个小孩</div><div class="ev-post-comment">评论 · 1　<span class="ev-blur">████████████</span></div></div>` },
+         html: `<div class="ev-phone"><div class="ev-phone-bar">23:58</div><img class="ev-post-photo" src="assets/ktv.jpg" alt="KTV"><div class="ev-post-text">18岁了，但我永远是个小孩</div><div class="ev-post-comment">评论 · 1　<span class="ev-blur">████████████</span></div></div>` },
   exD: { name: "D · 协议原件", item: "D", place: "林肯公园 · Couch 墓门缝", date: "2026.11.24", img: "",
          html: `<div class="crayon big">永远不长大协议<br><br>我保证永远不长大，<br>每年生日陪你玩。<br><br><span class="tiny">除非我变成一个很酷的大人。</span><br><br>— {her}，十岁</div>` },
   depo: { name: "W · 证人W的证词", item: "W", place: "林肯公园", date: "2026.11.24", img: "",
@@ -74,6 +75,8 @@ const CHAPTERS = [
   id: "ch0", title: "序章", subtitle: "火漆", place: "清晨 · 门口",
   counsel: [
     { type: "whisper", text: "天还没亮透。<br>门口躺着一个信封。<br><br>没有邮票，没有寄件人。<br>封口的火漆，还是温的。" },
+    { type: "award", flag: "exX" },
+    { type: "bag", items: ["exX"], text: "信封里的相框角上，什么也没有。<br>只有一个铅笔写的 <b>X</b>。<br><br>里面夹着一张明信片。" },
     { type: "postcard", place: "CHICAGO · 06:00", text: "{her}，<br>好久不见。<br><br>你大概已经忘了我。<br>可你欠我的东西，<br>我一直记着。", sign: "— X" },
     { type: "document", docTitle: "传票", html: `
 <p class="doc-court">{court}</p>
@@ -150,7 +153,8 @@ const CHAPTERS = [
     { type: "bag", items: ["exA", "exB"], text: "🔒 只有你看得见。她问起时，再念给她听。", noAward: true },
     { type: "document", docTitle: "🔒 关于 X", html: `
 <h3>X</h3>
-<p>没有照片，没有名字。<br>日记之后的十年，什么记录都没有。</p>
+<img class="doc-photo" src="assets/sleeve-x.jpg" alt="空档案袋">
+<p>档案袋是空的。没有照片，没有名字。<br>日记之后的十年，什么记录都没有。</p>
 <p class="doc-footnote">🔑 "它叫什么？"——答案是 FLAMINGO：广场中央那座红色的大钢雕，Calder 的《火烈鸟》。她卡住了，就提示一句："抬头，找红色。"</p>` },
     { type: "gate", text: "输入她给你的暗号：", code: "ch1_toAssistant", success: "下一站：林肯公园。" }
   ]

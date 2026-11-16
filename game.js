@@ -49,19 +49,35 @@
   let role = params.get("role") || localStorage.getItem("cf20_role");
   if (role && !["counsel", "assistant"].includes(role)) role = null;
 
-  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, done: false });
+  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, done: false, ledger: {}, flagLedger: {}, passed: {} });
   let S = null;
 
   function load() {
     try { S = JSON.parse(localStorage.getItem("cf20_" + role)) || freshState(); }
     catch (e) { S = freshState(); }
+    S = Object.assign(freshState(), S);
   }
   function save() {
     try { localStorage.setItem("cf20_" + role, JSON.stringify(S)); }
     catch (e) { toast("存储空间不够了，照片可能没有保存。"); }
   }
-  function addScore(n) { S.score = Math.round((S.score + (n || 0)) * 10) / 10; }
-  function setFlag(f) { if (f) S.flags[f] = true; }
+  const stepKey = () => S.ch + ":" + S.step;
+  function addScore(n) {
+    if (!n) return;
+    S.score = Math.round((S.score + n) * 10) / 10;
+    const k = stepKey(); S.ledger[k] = Math.round(((S.ledger[k] || 0) + n) * 10) / 10;
+  }
+  function setFlag(f) {
+    if (!f) return;
+    S.flags[f] = true;
+    const k = stepKey(); (S.flagLedger[k] = S.flagLedger[k] || []).push(f);
+  }
+  // 回到某一步时，撤销那一步的得分和标记
+  function undoStep(k) {
+    if (S.ledger[k]) { S.score = Math.round((S.score - S.ledger[k]) * 10) / 10; delete S.ledger[k]; }
+    (S.flagLedger[k] || []).forEach((f) => delete S.flags[f]); delete S.flagLedger[k];
+  }
+  const AUTO = (st) => st.type === "award" || (st.type === "exhibitShow" && !S.flags[st.flag]);
 
   function toast(msg) {
     const n = el("div", { class: "toast" }, msg);
@@ -136,16 +152,44 @@
     const step = steps[S.step];
     const fn = STEPS[step.type];
     if (!fn) { console.warn("未知步骤类型", step.type); return next(); }
-    const node = fn(step, next);
-    if (node) main.append(node);
+    let used = false;
+    const once = () => { if (used) return; used = true; next(); };   // 防止连点跳过步骤
+    const node = fn(step, once);
+    if (node) { node.classList.add("turn"); main.append(node); }
+    if (canGoBack()) main.append(el("button", { class: "back-btn", onclick: back }, "← 上一页"));
     window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
   }
 
-  function next() { S.step += 1; save(); render(); }
+  function next() { S.passed[stepKey()] = true; S.step += 1; save(); render(); }
+
+  function prevPos(ch, step) {
+    // 找到上一个非自动步骤
+    let c = ch, i = step - 1;
+    while (c >= 0) {
+      const steps = CHAPTERS[c][role] || [];
+      if (i < 0) { c -= 1; if (c < 0) return null; i = (CHAPTERS[c][role] || []).length - 1; continue; }
+      if (!AUTO(steps[i])) return [c, i];
+      i -= 1;
+    }
+    return null;
+  }
+  function canGoBack() { return !!prevPos(S.ch, S.step); }
+  function back() {
+    const p = prevPos(S.ch, S.step); if (!p) return;
+    // 撤销从目标步到当前步之间所有步骤的得分（包括自动步骤）
+    let [c, i] = p;
+    const target = [c, i];
+    while (c < S.ch || (c === S.ch && i < S.step)) {
+      undoStep(c + ":" + i);
+      i += 1; if (i >= (CHAPTERS[c][role] || []).length) { c += 1; i = 0; }
+    }
+    S.ch = target[0]; S.step = target[1]; S.done = false; save(); render();
+  }
 
   function renderChapterEnd(main, chapter) {
     const last = S.ch >= CHAPTERS.length - 1;
-    main.append(card("center",
+    main.append(el("button", { class: "back-btn", onclick: back }, "← 上一页"));
+    main.prepend(card("center turn",
       el("div", { class: "stamp" }, "FILED"),
       el("h2", {}, chapter.title + " · 完成"),
       el("p", {}, last ? "全部章节已经完成。" : "准备好了就进入下一章。"),
@@ -209,6 +253,57 @@
 
   // ---------- 步骤类型 ----------
   const STEPS = {};
+
+  function distM(a, b, c, d) {
+    const R = 6371000, r = Math.PI / 180;
+    const x = (c - a) * r, y = (d - b) * r;
+    const h = Math.sin(x / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin(y / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  STEPS.geo = (s, done) => {
+    const place = CONFIG.places && CONFIG.places[s.place];
+    if (!CONFIG.useGeo || !place) { setTimeout(done, 0); return null; }
+    if (S.passed[stepKey()]) {
+      return card("center geo", el("div", { class: "geo-pin arrived" }, "◉"), el("div", { class: "text" }, "已抵达 · " + place.name), btn("继续", done));
+    }
+    const status = el("div", { class: "geo-status" }, "");
+    const pin = el("div", { class: "geo-pin" }, "◎");
+    const arrive = () => {
+      pin.classList.add("arrived"); pin.textContent = "◉";
+      status.innerHTML = "你到了。";
+      setTimeout(done, 900);
+    };
+    const check = () => {
+      if (!navigator.geolocation) { status.textContent = "这台手机不支持定位。请用备用暗号。"; return; }
+      status.textContent = "正在寻找你的位置……";
+      pin.classList.add("searching");
+      navigator.geolocation.getCurrentPosition((pos) => {
+        pin.classList.remove("searching");
+        const d = distM(pos.coords.latitude, pos.coords.longitude, place.lat, place.lng);
+        const slack = Math.min(pos.coords.accuracy || 0, 150);
+        if (d <= place.radius + slack) arrive();
+        else status.innerHTML = "还没到。<br>距离 <b>" + (d >= 1000 ? (d / 1000).toFixed(1) + " 公里" : Math.round(d) + " 米") + "</b>。";
+      }, (err) => {
+        pin.classList.remove("searching");
+        status.innerHTML = err.code === 1 ? "定位被拒绝了。<br>请在浏览器设置里允许定位，或者用备用暗号。" : "暂时找不到你的位置。再试一次？";
+      }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 });
+    };
+    const overrideBox = el("div", { class: "geo-override hidden" });
+    const input = el("input", { class: "code-input", placeholder: "备用暗号", autocapitalize: "characters", autocomplete: "off" });
+    overrideBox.append(input, btn("确认", () => {
+      if (norm(input.value) === norm(CONFIG.codes.geoOverride)) arrive(); else toast("不对。");
+    }, "secondary"));
+    return card("center geo",
+      el("div", { class: "geo-label" }, "抵 达"),
+      pin,
+      el("div", { class: "geo-place" }, place.name),
+      el("div", { class: "text", html: t(s.text) }),
+      status,
+      btn("📍 我到了", check),
+      el("button", { class: "link small", onclick: () => overrideBox.classList.toggle("hidden") }, "定位不准？"),
+      overrideBox);
+  };
 
   STEPS.whisper = (s, done) => {
     const box = el("div", { class: "whisper-text" });
@@ -460,6 +555,9 @@
   }
 
   STEPS.gate = (s, done) => {
+    if (S.passed[stepKey()]) {
+      return card("center gate", el("div", { class: "lock" }, "🔓"), el("div", { class: "text", html: t(s.success || "已解锁。") }), btn("继续", done));
+    }
     if (s.any) {
       const input = el("input", { class: "code-input free", placeholder: "写下来", autocomplete: "off" });
       const c = card("center gate", el("div", { class: "lock" }, "✒"), el("div", { class: "text", html: t(s.text) }), input);

@@ -257,3 +257,42 @@ blockquote { border-left: 3px solid var(--wax); margin: 10px 0; padding: 4px 14p
 
 /* 更暗的暗角 */
 body::after { content: ""; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.45) 100%); z-index: 40; }
+
+/* ---------- 翻页 / 返回 ---------- */
+.turn { animation: pageIn .7s cubic-bezier(.2,.7,.2,1) both; transform-origin: 50% 0; }
+@keyframes pageIn { from { opacity: 0; filter: blur(6px); transform: translateY(14px) rotate(-.8deg); } to { opacity: 1; filter: none; } }
+.paper.turn, .postcard.turn { animation-duration: .9s; }
+.back-btn { display: block; margin: 22px auto 0; background: none; border: 0; color: rgba(241,226,192,.55); font-family: var(--fell); font-style: italic; font-size: 15px; letter-spacing: .15em; cursor: pointer; padding: 8px 14px; }
+.back-btn:hover { color: var(--parch); }
+.link.small { display: block; margin: 10px auto 0; font-size: 13px; color: var(--ink-soft); font-style: italic; }
+
+/* ---------- 烛光 ---------- */
+body::before { content: ""; position: fixed; left: 50%; top: -18vh; width: 120vw; height: 70vh; transform: translateX(-50%); pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse at center, rgba(255,190,110,.16), transparent 60%); animation: candle 5s ease-in-out infinite; }
+@keyframes candle { 0%,100% { opacity: .9; } 30% { opacity: .65; } 45% { opacity: 1; } 70% { opacity: .75; } }
+#app { position: relative; z-index: 1; }
+
+/* ---------- 定位卡 ---------- */
+.geo { padding-top: 30px; }
+.geo-label { font-family: var(--fell); letter-spacing: .8em; font-size: 13px; color: var(--sepia); margin-bottom: 6px; }
+.geo-pin { width: 120px; height: 120px; margin: 8px auto 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px; color: var(--wax);
+  border: 1px solid rgba(139,94,52,.6); box-shadow: 0 0 0 10px rgba(139,94,52,.08), 0 0 0 22px rgba(139,94,52,.05) inset;
+  background: repeating-radial-gradient(circle, transparent 0 14px, rgba(139,94,52,.18) 14px 15px); position: relative; }
+.geo-pin::after { content: "N"; position: absolute; top: 4px; font-family: var(--fell); font-size: 12px; color: var(--ink-soft); }
+.geo-pin.searching { animation: sonar 1.4s ease-out infinite; }
+@keyframes sonar { 0% { box-shadow: 0 0 0 0 rgba(142,27,27,.5); } 100% { box-shadow: 0 0 0 34px rgba(142,27,27,0); } }
+.geo-pin.arrived { color: #fff3e0; background: radial-gradient(circle at 35% 30%, var(--wax-2), var(--wax) 60%, #4f0d0d); border-color: var(--wax); }
+.geo-place { font-family: var(--brush); font-size: 24px; margin: 4px 0 8px; }
+.geo-status { min-height: 26px; font-size: 15px; color: var(--ink-soft); margin: 6px 0; }
+.geo-status b { color: var(--wax); }
+.geo-override { margin-top: 8px; }
+
+/* ---------- 文字质感 ---------- */
+.card.narr .text::first-letter { font-family: var(--brush); font-size: 2.2em; float: left; line-height: 1; margin: 4px 6px 0 0; color: var(--wax); }
+.card .text, .prompt { letter-spacing: .02em; }
+.code-card { overflow: hidden; }
+.code-card::after { content: ""; position: absolute; right: -14px; bottom: -14px; width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--wax-2), var(--wax) 55%, #4f0d0d); opacity: .85; box-shadow: 0 3px 8px rgba(0,0,0,.4); }
+.chapter-head h1 { text-shadow: 0 0 18px rgba(255,190,110,.25), 0 3px 8px rgba(0,0,0,.6); }
+.ch-place { letter-spacing: .1em; }
+.postcard { box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 0 50px rgba(139,94,52,.3) inset, 0 20px 40px rgba(0,0,0,.55); }
+.postcard::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 92% 8%, rgba(60,30,10,.18) 0 18px, transparent 19px), radial-gradient(circle at 6% 94%, rgba(60,30,10,.12) 0 30px, transparent 31px); }

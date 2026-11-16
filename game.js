@@ -28,6 +28,7 @@
     if (str == null) return "";
     return String(str)
       .replaceAll("{plaintiffMessage}", CONFIG.plaintiffMessage)
+      .replaceAll("{X}", CONFIG.plaintiffName)
       .replaceAll("{her}", CONFIG.herName)
       .replaceAll("{assistant}", CONFIG.assistantName)
       .replaceAll("{plaintiff}", CONFIG.plaintiffReveal)
@@ -35,6 +36,8 @@
       .replaceAll("{court}", CONFIG.courtName + "<br><small>" + CONFIG.courtNameZh + "</small>");
   }
 
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const QUILL = '<svg viewBox="0 0 64 64" width="18" height="18" aria-hidden="true"><path d="M58 4C40 6 24 18 16 36l-4 10 3 3 10-4C42 37 56 22 58 4z" fill="currentColor" opacity=".85"/><path d="M14 48L4 60" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M50 12C38 18 28 28 20 42" stroke="#1a120b" stroke-width="1.5" fill="none" opacity=".5"/></svg>';
   const norm = (s) => String(s || "").trim().toUpperCase().replace(/\s+/g, "");
   const codeOf = (key) => CONFIG.codes[key];
 
@@ -71,15 +74,16 @@
     const root = app();
     root.innerHTML = "";
     const header = el("header", { class: "topbar" },
-      el("div", { class: "caseno" }, "CASE No. " + CONFIG.caseNo),
-      el("div", { class: "role-badge " + role }, role === "counsel" ? "⚖️ 辩护律师 · " + CONFIG.herName : "📎 律师助手 · " + CONFIG.assistantName),
+      el("div", { class: "caseno" }, el("span", { class: "quill", html: QUILL }), "No. " + CONFIG.caseNo),
+      el("div", { class: "role-badge " + role }, role === "counsel" ? "⚖️ " + CONFIG.herName : "📎 " + CONFIG.assistantName),
       role === "counsel" ? el("button", { class: "icon-btn", title: "证物", onclick: openExhibits }, "📁") : null
     );
     root.append(header);
     if (chapter) {
       root.append(el("div", { class: "chapter-head" },
-        el("div", { class: "ch-sub" }, chapter.subtitle),
-        el("h1", {}, chapter.title),
+        el("div", { class: "ch-sub" }, chapter.title),
+        el("h1", {}, chapter.subtitle),
+        chapter.place ? el("div", { class: "ch-place" }, "✒ " + chapter.place) : null,
         progressDots()
       ));
     }
@@ -87,7 +91,7 @@
     root.append(main);
     root.append(el("footer", { class: "foot" },
       el("button", { class: "link", onclick: confirmReset }, "重新开始"),
-      el("span", {}, "🎂 生日游戏 · 情节虚构，法律程序参照伊利诺伊州真实规则，不构成法律意见")
+      el("span", {}, "CASE FILE No. 20 · 纯属虚构")
     ));
     return main;
   }
@@ -156,16 +160,18 @@
     const root = app();
     root.innerHTML = "";
     root.append(el("div", { class: "landing" },
-      el("div", { class: "seal-big" }, "⚖︎"),
-      el("p", { class: "ch-sub" }, CONFIG.courtName),
+      el("div", { class: "land-env" },
+        el("div", { class: "land-to" }, "To: " + CONFIG.herName),
+        el("div", { class: "wax" }, "X"),
+        el("div", { class: "land-from" }, "From: " + CONFIG.plaintiffName)),
       el("h1", {}, "第二十号档案"),
-      el("p", { class: "lead" }, "CASE FILE No. 20 · " + "John Doe v. " + CONFIG.herName),
-      el("p", {}, "这是一个双人游戏。两个人各用一部手机，看到的内容不一样。"),
+      el("p", { class: "lead" }, CONFIG.plaintiffName + " v. " + CONFIG.herName),
+      el("p", { class: "land-hint", html: "两个人，两部手机。<br>你们看到的，不一样。" }),
       el("div", { class: "role-pick" },
-        btn("我是 " + CONFIG.herName + "（被告兼辩护律师）", () => pickRole("counsel")),
-        btn("我是律师助手 " + CONFIG.assistantName, () => pickRole("assistant"), "secondary")
+        btn("我是 " + CONFIG.herName, () => pickRole("counsel")),
+        btn("我是助手 " + CONFIG.assistantName, () => pickRole("assistant"), "secondary")
       ),
-      el("p", { class: "doc-footnote" }, "🎂 生日游戏 · 情节纯属虚构")
+      el("p", { class: "doc-footnote" }, "纯属虚构")
     ));
   }
   function pickRole(r) {
@@ -203,6 +209,34 @@
 
   // ---------- 步骤类型 ----------
   const STEPS = {};
+
+  STEPS.whisper = (s, done) => {
+    const box = el("div", { class: "whisper-text" });
+    const go = btn("……", done, "secondary ghost");
+    go.style.visibility = "hidden";
+    const c = el("section", { class: "whisper" }, box, go);
+    const html = t(s.text);
+    let i = 0, timer = null;
+    const finish = () => { clearTimeout(timer); box.innerHTML = html; go.style.visibility = "visible"; };
+    const step = () => {
+      if (!document.body.contains(c) && i > 0) return;
+      if (i >= html.length) return finish();
+      if (html[i] === "<") { i = html.indexOf(">", i) + 1; } else { i++; }
+      box.innerHTML = html.slice(0, i) + '<span class="caret">▍</span>';
+      timer = setTimeout(step, html[i - 1] === "。" ? 260 : 45);
+    };
+    c.addEventListener("click", (e) => { if (e.target !== go) finish(); });
+    setTimeout(step, 300);
+    return c;
+  };
+
+  STEPS.postcard = (s, done) => el("div", { class: "pc-wrap" },
+    el("article", { class: "postcard" },
+      el("div", { class: "pc-head" }, el("span", { class: "pc-title" }, "Carte Postale"), el("span", { class: "pc-stamp" }, "X")),
+      el("div", { class: "pc-mark" }, el("span", {}, t(s.place || ""))),
+      el("div", { class: "pc-text", html: t(s.text) }),
+      el("div", { class: "pc-sign" }, t(s.sign || ""))),
+    btn("继续", done));
 
   STEPS.narration = (s, done) => card("narr",
     s.title ? el("h2", {}, t(s.title)) : null,
@@ -251,8 +285,8 @@
       const row = el("div", { class: "arow" }, el("div", { class: "atext", html: t(p.text) }), seg);
       c.append(row); return row;
     });
-    const submit = btn("提交答辩状", () => {
-      if (Object.keys(picks).length < s.paragraphs.length) return toast("每一段都要回应！没有否认的会被视为承认。");
+    const submit = btn("提交", () => {
+      if (Object.keys(picks).length < s.paragraphs.length) return toast("每一条都要回应！");
       let right = 0;
       s.paragraphs.forEach((p, i) => {
         const ok = picks[i] === p.correct; if (ok) right++;
@@ -261,7 +295,7 @@
       });
       addScore(right * 0.5); save();
       submit.remove();
-      c.append(el("div", { class: "feedback", html: "答对 " + right + " / " + s.paragraphs.length + " 段。" + (s.note ? "<br><br>" + t(s.note) : "") }));
+      c.append(el("div", { class: "feedback", html: "答对 " + right + " / " + s.paragraphs.length + "。" + (s.note ? "<br><br>" + t(s.note) : "") }));
       c.append(btn("继续", done));
     });
     c.append(submit);
@@ -308,8 +342,7 @@
     });
     const tick = () => {
       if (finished) return;
-      const day = Math.max(0, Math.ceil(left / s.seconds * 28));
-      timer.textContent = "⏳ 剩余：第 " + day + " 天（" + left + " 秒）";
+      timer.textContent = "⏳ 还剩 " + left + " 秒";
       timer.classList.toggle("urgent", left <= 20);
       if (left <= 0) return finish(true);
       left--; setTimeout(tick, 1000);
@@ -322,16 +355,16 @@
         const deemed = !picks[i];
         const ok = ans === it.correct; if (ok) right++;
         rows[i].querySelector(".seg").replaceWith(el("div", { class: "result " + (ok ? "ok" : "bad"), html:
-          (ok ? "✓ " : "✗ ") + (deemed ? "视为承认" : "你：" + ans) + (ok ? "" : " · 应该：" + it.correct) + "<br><small>" + t(it.why) + "</small>" }));
+          (ok ? "✓ " : "✗ ") + (deemed ? "没回答，算你认了" : "你：" + ans) + (ok ? "" : " · 应该：" + it.correct) + "<br><small>" + t(it.why) + "</small>" }));
       });
       addScore(right * 0.5); save();
       submit.remove();
-      timer.textContent = timeout ? "⌛ 28天已过！未回应的事实全部视为承认。" : "✅ 已在期限内提交。";
+      timer.textContent = timeout ? "⌛ 时间到！没回答的，算你认了。" : "✅ 及时交卷。";
       c.append(el("div", { class: "feedback", html: "答对 " + right + " / " + s.items.length + "。<br><br>" + t(s.note || "") }));
       c.append(btn("继续", done));
     };
-    const submit = btn("提交宣誓回应", () => {
-      if (Object.keys(picks).length < s.items.length && !confirm("还有没回应的条目，它们会被视为承认。确定提交吗？")) return;
+    const submit = btn("交卷", () => {
+      if (Object.keys(picks).length < s.items.length && !confirm("还有没回答的，会算你认了。确定交卷？")) return;
       finish(false);
     });
     c.append(submit);
@@ -406,7 +439,7 @@
   STEPS.codeGive = (s, done) => card("center code-card",
     el("div", { class: "text", html: t(s.text) }),
     el("div", { class: "code" }, codeOf(s.code)),
-    el("div", { class: "muted" }, "口头告诉对方，不要直接给 TA 看屏幕。"),
+    el("div", { class: "muted" }, "用嘴说，别给 TA 看屏幕。"),
     btn("我已经告诉 TA 了", done));
 
   function renderGateRaw(text, accepted, onOk, successText) {
@@ -427,6 +460,17 @@
   }
 
   STEPS.gate = (s, done) => {
+    if (s.any) {
+      const input = el("input", { class: "code-input free", placeholder: "写下来", autocomplete: "off" });
+      const c = card("center gate", el("div", { class: "lock" }, "✒"), el("div", { class: "text", html: t(s.text) }), input);
+      c.append(btn("提交", () => {
+        if (!input.value.trim()) return toast("写点什么吧");
+        S.flags[s.key] = input.value.trim(); save();
+        if (s.success) { c.innerHTML = ""; c.append(el("div", { class: "text", html: t(s.success) }), btn("继续", done)); } else done();
+      }));
+      return c;
+    }
+    if (s.accept) return renderGateRaw(s.text, s.accept, () => done(), s.success);
     const code = codeOf(s.code);
     if (code && typeof code === "object") {
       const map = Object.fromEntries(Object.entries(code).map(([k, v]) => [norm(v), k]));
@@ -435,7 +479,7 @@
     return renderGateRaw(s.text, [code], () => done(), s.success);
   };
 
-  function bucketOf(score) { return score >= 12 ? "strong" : score >= 7 ? "medium" : "weak"; }
+  function bucketOf(score) { return score >= 8 ? "strong" : score >= 4 ? "medium" : "weak"; }
 
   STEPS.scoreCode = (s, done) => {
     const b = bucketOf(S.score); S.bucket = b; save();
@@ -447,40 +491,33 @@
 
   STEPS.evalMemo = (s, done) => {
     const memos = {
-      strong: { p: 90, txt: "证据非常有利：有协议原件里的例外条款，有证人证明发帖时不知情。原告的追认主张几乎站不住。" },
-      medium: { p: 70, txt: "证据对我方有利，但还有漏洞。庭审中要抓住追认问题和例外条款。" },
-      weak:   { p: 50, txt: "证据不够扎实，庭审有风险。和解是一个理性的选择，但未成年人抗辩依然是一张强牌。" }
+      strong: { p: 90, txt: "我们有那张纸上的最后一行，还有 W 的证词。X 已经没有牌了。" },
+      medium: { p: 70, txt: "证据够用，但还有漏洞。X 还藏着什么。" },
+      weak:   { p: 50, txt: "证据不够。但\"那年我才10岁\"，依然是最硬的一句话。" }
     };
     const m = memos[S.bucket] || memos.medium;
-    const lose = 100 - m.p;
     return el("div", {},
-      el("div", { class: "doc-label" }, "🔒 仅助手可见 · 案件评估备忘录"),
+      el("div", { class: "doc-label" }, "🔒 你的判断"),
       el("article", { class: "paper", html: `
-<h3>MEMORANDUM（内部备忘录）</h3>
-<p><b>致：</b>${CONFIG.herName}（被告，pro se）<br><b>自：</b>${CONFIG.assistantName}（律师助手）<br><b>事由：</b>是否接受和解</p>
-<p><b>1. 胜诉概率估计：约 ${m.p}%</b></p>
+<h3>胜算：${m.p}%</h3>
 <p>${m.txt}</p>
-<p><b>2. 期望值分析（Expected Value）</b></p>
-<p>如果败诉，法院可能判令"每年生日陪原告玩一整天"。假设这件事的\"成本\"是 C：</p>
-<p class="formula">上庭的期望成本 = 败诉概率 × C = ${lose}% × C</p>
-<p>和解的成本 = "每年生日做一件新的事" ≈ 几乎为零，甚至是正收益。</p>
-<p><b>3. 结论</b></p>
-<p>${m.p >= 80 ? "从期望值看，上庭的风险很小；但和解的条件本身就是一件好事。两种选择都合理。" : "从期望值看，和解相当划算。但最终决定权在你。"}</p>
-<p class="doc-footnote">真实世界中，律师会把这类评估告诉当事人，由当事人自己决定是否和解。</p>` }),
+<p class="doc-zh">如果输了：每年生日，X 都会来。<br>如果接受：每年生日，做一件没做过的事。</p>
+<p>${m.p >= 80 ? "上法庭，胜算很大。" : "接受条件，也许不是坏事。"}</p>
+<p class="doc-footnote">念给她听，让她自己决定。</p>` }),
       btn("念给她听了", done));
   };
 
   STEPS.jurySelect = (s, done) => {
     const struck = new Set();
     const c = card("", el("div", { class: "prompt", html: t(s.prompt) }));
-    const counter = el("div", { class: "counter-line" }, "已回避 0 / " + s.strikes);
+    const counter = el("div", { class: "counter-line" }, "已踢掉 0 / " + s.strikes);
     c.append(counter);
     const grid = el("div", { class: "jurors" });
     const cards = s.jurors.map((j, i) => {
       const jc = el("button", { class: "juror", onclick: () => {
         if (struck.has(i)) { struck.delete(i); jc.classList.remove("struck"); }
-        else { if (struck.size >= s.strikes) return toast("这一组最多回避 " + s.strikes + " 人"); struck.add(i); jc.classList.add("struck"); }
-        counter.textContent = "已回避 " + struck.size + " / " + s.strikes;
+        else { if (struck.size >= s.strikes) return toast("最多踢掉 " + s.strikes + " 个"); struck.add(i); jc.classList.add("struck"); }
+        counter.textContent = "已踢掉 " + struck.size + " / " + s.strikes;
       } }, el("div", { class: "jn" }, j.name), el("div", { class: "jj" }, j.job));
       grid.append(jc); return jc;
     });
@@ -514,7 +551,7 @@
     const advance = () => {
       controls.innerHTML = "";
       if (i >= s.lines.length) {
-        say("", "原告方举证完毕。你成功提出了 " + right + " 次异议。");
+        say("", "X 说完了。你成功喊了 " + right + " 次异议。");
         controls.append(btn("继续", done)); save(); return;
       }
       const L = s.lines[i];
@@ -532,9 +569,9 @@
       controls.innerHTML = "";
       controls.append(el("div", { class: "muted" }, "异议理由是？"));
       s.grounds.forEach((g, gi) => controls.append(el("button", { class: "opt small", onclick: () => {
-        if (L.ground == null) { addScore(-0.5); say("bad", "法官：<b>\"Overruled.\"</b>（异议驳回）这个问答没有问题。"); }
-        else if (gi === L.ground) { addScore(1); right++; say("ok", "法官：<b>\"Sustained.\"</b>（异议成立）陪审团请忽略刚才的内容。<br><small>" + t(L.why) + "</small>"); }
-        else { addScore(0.5); right++; say("ok", "法官：<b>\"Sustained.\"</b>不过更准确的理由是：" + s.grounds[L.ground] + "。<br><small>" + t(L.why) + "</small>"); }
+        if (L.ground == null) { addScore(-0.5); say("bad", "法官：<b>\"驳回！\"</b>这句话没毛病。"); }
+        else if (gi === L.ground) { addScore(1); right++; say("ok", "法官：<b>\"异议成立！\"</b>陪审团，刚才那句当没听见。<br><small>" + t(L.why) + "</small>"); }
+        else { addScore(0.5); right++; say("ok", "法官：<b>\"异议成立！\"</b>不过更准确地说是：" + s.grounds[L.ground] + "。<br><small>" + t(L.why) + "</small>"); }
         i++; save(); advance();
       } }, g)));
     };
@@ -566,19 +603,19 @@
   STEPS.verdict = (s, done) => {
     const sc = S.score;
     let level, text;
-    if (sc >= 26) { level = "全票通过 · 完胜"; text = "我们陪审团一致裁定：<b>支持被告</b>。原告的全部请求不予支持。陪审员们还额外写了一张纸条：\"被告是我们见过最酷的大人。\""; }
-    else if (sc >= 18) { level = "一致裁定 · 胜诉"; text = "我们陪审团一致裁定：<b>支持被告</b>。该协议在被告成年后未经有效追认，且其例外条款已经触发。"; }
-    else { level = "一致裁定 · 险胜"; text = "经过漫长的评议，我们陪审团一致裁定：<b>支持被告</b>。未成年人订立的合同可以撤销——这一点就足够了。"; }
-    if (S.flags.settled) text += "<br><br><small>（平行宇宙记录：在主宇宙里，本案已经和解。）</small>";
+    if (sc >= 21) { level = "12 : 0"; text = "陪审团全票：<b>" + CONFIG.herName + "胜诉。</b><br><br>宣判的那一刻，法庭里所有的钟，同时响了。"; }
+    else if (sc >= 13) { level = "12 : 0"; text = "陪审团全票：<b>" + CONFIG.herName + "胜诉。</b><br><br>协议上的字，一行一行褪色，消失了。"; }
+    else { level = "12 : 0"; text = "陪审团争论了很久。<br>灯灭了三次。<br><br>最后，全票：<b>" + CONFIG.herName + "胜诉。</b>"; }
+    if (S.flags.settled) text += "<br><br><small>（在另一个时间线里，你接受了 X 的条件。）</small>";
     S.verdict = { level, text, score: sc }; save();
     const c = card("center verdict",
-      el("div", { class: "muted" }, "陪审团回到了法庭。"),
-      el("div", { class: "muted" }, "法官：\"陪审团是否已经作出裁决？\""),
-      el("div", { class: "muted" }, "首席陪审员：\"是的，法官大人。\""));
-    const reveal = btn("宣读裁决", () => {
+      el("div", { class: "muted" }, "陪审团回来了。"),
+      el("div", { class: "muted" }, "法官：\"结果出来了吗？\""),
+      el("div", { class: "muted" }, "陪审团长：\"出来了。\""));
+    const reveal = btn("揭晓", () => {
       reveal.remove();
       c.append(el("div", { class: "stamp big" }, "VERDICT"), el("h2", {}, level), el("div", { class: "text", html: text }),
-        el("div", { class: "muted" }, "案件评分：" + sc), btn("继续", done));
+        el("div", { class: "muted" }, "得分：" + sc), btn("继续", done));
     }, "danger");
     c.append(reveal);
     return c;
@@ -600,7 +637,7 @@
       el("div", { class: "row" },
         btn("清除", () => { ctx.clearRect(0, 0, cv.width, cv.height); drawn = false; }, "secondary"),
         btn("确认签名", () => {
-          if (!drawn) return toast("请先用手指签名");
+          if (!drawn) return toast("用手指签个名吧");
           S.sigs[s.who] = cv.toDataURL("image/png"); save(); done();
         })));
   };
@@ -611,19 +648,18 @@
     const sig = (w) => S.sigs[w] ? `<img class="sig" src="${S.sigs[w]}" alt="签名">` : `<div class="sig empty"></div>`;
     return `
 <p class="doc-court">${t("{court}")}</p>
-<p class="doc-caption"><b>JOHN DOE</b>（后查明为：${t("{plaintiff}")}），原告<br>诉<br><b>${CONFIG.herName}</b>，被告</p>
+<p class="doc-caption"><b>${CONFIG.plaintiffName}</b><br><small>（面具之下：${t("{plaintiff}")}）</small><br>v.<br><b>${CONFIG.herName}</b></p>
 <p class="doc-caseno">Case No. ${CONFIG.caseNo}</p>
-<h3>JUDGMENT ON THE VERDICT<br>依陪审团裁决作出的判决</h3>
-<p>本案经陪审团审理。陪审团裁决如下：</p>
+<h3>判决书 · JUDGMENT</h3>${S.flags.comicVerdict ? `<p class="doc-zh">今晚的喜剧法庭判了：“${esc(S.flags.comicVerdict)}”</p>` : ""}
 <blockquote>${v.text}</blockquote>
-<p><b>IT IS HEREBY ORDERED AND ADJUDGED：</b></p>
-<p>判决支持被告 ${CONFIG.herName}。被告已年满20岁，依法有权成为一个大人。本庭同时判令：被告应在20岁这一年<b>继续好奇、继续冒险、继续快乐</b>。</p>
+<p>本庭判决：<b>${CONFIG.herName} 胜诉。</b>《永远不长大协议》自此失效。</p>
+<p>附带一条：二十岁的她，仍须保留一点好奇心。<br>X 会每年检查。</p>
 <div class="sig-row">
-  <div>${sig("counsel")}<div class="sig-label">${CONFIG.herName}<br>Defendant, pro se（被告兼辩护律师）</div></div>
-  <div>${sig("assistant")}<div class="sig-label">${CONFIG.assistantName}<br>Paralegal（律师助手）</div></div>
+  <div>${sig("counsel")}<div class="sig-label">${CONFIG.herName}</div></div>
+  <div>${sig("assistant")}<div class="sig-label">${CONFIG.assistantName}</div></div>
 </div>
-<p class="judge-line">ENTERED：${today}　　　　<span class="seal-red">时间巡回法院<br>书记员印</span></p>
-<p class="doc-footnote">🎂 生日游戏道具 · 情节纯属虚构</p>`;
+<p class="judge-line">${today}　　　　<span class="seal-red">时间巡回法院<br>印</span></p>
+<p class="doc-footnote">本案纯属虚构。</p>`;
   }
 
   STEPS.judgment = (s, done, embedded) => el("div", { class: "printable" },
@@ -640,7 +676,7 @@
       el("div", { class: "doc-label" }, "🗂️ 案件卷宗"),
       el("article", { class: "paper dossier" },
         el("h3", {}, "案件卷宗 · " + CONFIG.caseNo),
-        el("p", {}, "John Doe v. " + CONFIG.herName),
+        el("p", {}, CONFIG.plaintiffName + " v. " + CONFIG.herName),
         el("h4", {}, "证物清单"),
         el("ul", {}, owned.map((k) => el("li", {}, EXHIBITS[k]))),
         el("h4", {}, "证据照片"),

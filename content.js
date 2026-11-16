@@ -128,7 +128,8 @@ const CHAPTERS = [
 <h3>B · 18岁那晚的帖子</h3>
 <div class="post">"18岁了，但我永远是个小孩"<br><small>2024.11.24 23:58 · 配图：KTV包厢</small></div>
 <h3>X</h3>
-<p>没有照片。没有名字。<br>日记之后的十年，没有任何记录。</p>` },
+<p>没有照片。没有名字。<br>日记之后的十年，没有任何记录。</p>
+<p class="doc-footnote">🔑 第一章开头那道题（"它叫什么？"）：答案是 FLAMINGO。就是联邦大楼前广场上那座红色的大钢雕塑（Calder 的《火烈鸟》）。她卡住的话，可以提示："抬头，找红色的东西。"</p>` },
     { type: "gate", text: "输入她给你的暗号：", code: "ch1_toAssistant", success: "下一站：林肯公园。" }
   ]
 },

@@ -605,3 +605,31 @@ body.has-bg #bgphoto { filter: sepia(.6) saturate(.8) brightness(.55) contrast(1
 .surprise-notes.on { animation: notes 2.2s ease-in-out infinite; opacity: 1; }
 @keyframes notes { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .surprise-card .gift-grid { margin-top: 10px; }
+
+/* ---- v6：整体提亮 ---- */
+body.has-bg #bgphoto { filter: sepia(.45) saturate(.95) brightness(.85) contrast(1.02) blur(.5px); }
+#bgphoto::after {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,220,160,.16), transparent 60%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(20,10,5,.45) 100%),
+    linear-gradient(180deg, rgba(30,18,8,.12), rgba(30,18,8,.35));
+}
+body::after { opacity: .45; }
+html { background: #3a2a1c; }
+body { background-color: #4a3524; }
+.whisper {
+  color: #fff4dc;
+  background:
+    var(--grain),
+    radial-gradient(ellipse at 50% 45%, rgba(150,102,58,.92), rgba(96,62,32,.95) 70%, #3d2614 100%);
+  background-size: 160px 160px, auto;
+  box-shadow: 0 0 50px rgba(40,20,5,.55) inset, 0 0 0 1px rgba(200,140,70,.45), 0 14px 30px rgba(0,0,0,.45);
+}
+.whisper-text { text-shadow: 0 1px 3px rgba(0,0,0,.45); }
+.whisper .btn.ghost { color: #fff4dc; border-color: rgba(255,240,210,.7); }
+.chapter-head h1 { background: linear-gradient(180deg, #fff3cf, #e7c36a 60%, #b88a45); -webkit-background-clip: text; background-clip: text; }
+.ch-sub, .chapter-head::after { color: #f0d68c; }
+.ch-place, .topbar, .foot, .back-btn { color: #f6e7c6; }
+.stage { filter: drop-shadow(0 10px 12px rgba(0,0,0,.3)); }
+#feathers .feather { opacity: .75; }
+.chapter-head, .topbar, .foot, .back-btn, .doc-label, .frag-head { text-shadow: 0 1px 3px rgba(0,0,0,.85), 0 0 12px rgba(0,0,0,.55); } .chapter-head h1 { filter: drop-shadow(0 2px 4px rgba(0,0,0,.9)); }

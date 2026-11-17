@@ -343,7 +343,7 @@
     const box = el("div", { class: "modal", onclick: (e) => { if (e.target === box) box.remove(); } },
       el("div", { class: "modal-inner letterpaper" },
         el("h3", {}, "✧ 记忆碎片 " + have.size + " / 20"),
-        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss" }, have.has(i + 1) ? f : "……"))),
+        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss" }, have.has(i + 1) ? [fadedPhoto(i + 1, true), fragText(i + 1)] : "……"))),
         btn("关闭", () => box.remove(), "secondary")));
     document.body.append(box);
   }
@@ -934,6 +934,21 @@
   };
 
   // ---- 记忆碎片 ----
+  const fragText = (i) => { const f = FRAGMENTS[i - 1]; return typeof f === "string" ? f : f.text; };
+  const fragImg = (i) => { const f = FRAGMENTS[i - 1]; return typeof f === "string" ? "" : (f.img || ""); };
+  function fadedPhoto(i, small) {
+    const src = fragImg(i);
+    if (!src) return null;
+    if (src === "none") return el("div", { class: "faded-photo empty" + (small ? " small" : "") }, el("div", { class: "fp-empty" }, "（这一次，没有照片）"));
+    const img = el("img", { src, alt: "", loading: "lazy" });
+    img.addEventListener("error", () => img.parentNode && img.parentNode.remove());
+    return el("div", { class: "faded-photo" + (small ? " small" : ""), onclick: (e) => { e.stopPropagation(); zoomPhoto(src, fragText(i)); } }, img);
+  }
+  function zoomPhoto(src, cap) {
+    const box = el("div", { class: "modal", onclick: () => box.remove() },
+      el("div", { class: "faded-photo zoom" }, el("img", { src, alt: "" }), el("div", { class: "fp-cap" }, cap)));
+    document.body.append(box);
+  }
   STEPS.fragment = (s, done) => {
     const fresh = s.ids.filter((i) => !S.frags.includes(i));
     S.frags = Array.from(new Set(S.frags.concat(s.ids))).sort((a, b) => a - b); save();
@@ -942,7 +957,8 @@
       el("div", { class: "frag-head" }, fresh.length ? "拾到" + (s.ids.length > 1 ? " " + s.ids.length + " 片" : "一片") + "记忆" : "记忆碎片"),
       s.ids.map((i, k) => el("div", { class: "frag", style: "--r:" + ((k % 2 ? 1 : -1) * (1 + (i % 3))) + "deg;animation-delay:" + (k * 0.25) + "s" },
         el("div", { class: "frag-no" }, "No." + String(i).padStart(2, "0") + " / 20"),
-        el("div", { class: "frag-text" }, FRAGMENTS[i - 1]))),
+        fadedPhoto(i),
+        el("div", { class: "frag-text" }, fragText(i)))),
       el("div", { class: "muted center" }, "已收集 " + S.frags.length + " / 20"),
       btn("收好", done));
   };
@@ -997,7 +1013,7 @@
       el("article", { class: "paper twenty-letter" },
         el("div", { class: "big20" }, "20"),
         el("p", { class: "doc-zh" }, "蛋清和蛋黄，替你收着的二十个日子。"),
-        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss", style: "animation-delay:" + (i * 0.12) + "s" }, f))),
+        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss", style: "animation-delay:" + (i * 0.12) + "s" }, fadedPhoto(i + 1, true), fragText(i + 1)))),
         el("p", { class: "doc-sign" }, "— 蛋清 & 蛋黄")),
       btn("继续", done));
   };

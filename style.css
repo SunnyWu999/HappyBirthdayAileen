@@ -350,3 +350,172 @@ body::before { content: ""; position: fixed; left: 50%; top: -18vh; width: 120vw
 .ev-stamp { position: absolute; right: 8px; top: 8px; border: 2px solid #b12a2a; color: #b12a2a; font-size: 10px; letter-spacing: .2em; padding: 1px 6px; transform: rotate(8deg); opacity: .8; }
 .ev-post-photo { display: block; width: 100%; height: 150px; object-fit: cover; border-radius: 6px; }
 .doc-photo { display: block; width: 100%; max-width: 320px; margin: 8px auto; border: 6px solid #fff; border-bottom-width: 20px; box-shadow: 0 4px 10px rgba(0,0,0,.3); transform: rotate(-1.5deg); }
+
+/* =====================================================================
+   v3 · 老旧信纸 + 地点照片背景 + 记忆碎片 + 海龟汤填空 + 七件礼物
+   ===================================================================== */
+:root {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --rule: rgba(92, 120, 160, .16);
+  --margin-red: rgba(170, 50, 40, .32);
+}
+
+/* —— 地点照片背景 —— */
+#bgphoto {
+  position: fixed; inset: -20px; z-index: -1;
+  background-size: cover; background-position: center;
+  filter: sepia(.75) saturate(.7) brightness(.42) contrast(1.1) blur(1.5px);
+  opacity: 0; transition: opacity 1.6s ease, background-image 0s;
+  transform: scale(1.04);
+  animation: bgdrift 40s ease-in-out infinite alternate;
+}
+#bgphoto.on { opacity: 1; }
+#bgphoto::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,200,130,.10), transparent 55%),
+    radial-gradient(ellipse at center, transparent 35%, rgba(10,5,2,.85) 100%),
+    linear-gradient(180deg, rgba(20,10,5,.35), rgba(20,10,5,.75));
+}
+@keyframes bgdrift { from { transform: scale(1.04) translate(0,0); } to { transform: scale(1.1) translate(-1.5%, -1%); } }
+body { background-color: transparent; }
+html { background: #1a110b; }
+
+/* —— 所有文字框：老旧信纸 —— */
+.card, .paper, .modal-inner, .letterpaper {
+  background:
+    var(--grain),
+    radial-gradient(circle at 12% 18%, rgba(120,72,30,.16) 0 3%, transparent 6%),
+    radial-gradient(circle at 82% 72%, rgba(120,72,30,.13) 0 4%, transparent 8%),
+    radial-gradient(circle at 64% 12%, rgba(120,72,30,.08) 0 2%, transparent 4%),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(110,62,22,.38) 100%),
+    linear-gradient(90deg, transparent 34px, var(--margin-red) 34px, var(--margin-red) 35px, transparent 35px, transparent 38px, var(--margin-red) 38px, var(--margin-red) 39px, transparent 39px),
+    repeating-linear-gradient(180deg, transparent 0 27px, var(--rule) 27px 28px),
+    linear-gradient(160deg, #f4e6c4 0%, #ead6a6 55%, #dfc58e 100%);
+  background-size: 160px 160px, auto, auto, auto, auto, auto, auto, auto;
+  box-shadow:
+    0 0 0 1px rgba(120,80,40,.25),
+    0 0 50px rgba(120,70,25,.35) inset,
+    0 2px 0 rgba(255,255,255,.35) inset,
+    0 18px 36px rgba(0,0,0,.55);
+  /* 毛边 */
+  clip-path: polygon(0% 1.2%, 4% 0%, 11% .9%, 19% .1%, 27% 1%, 36% .2%, 45% .8%, 53% 0%, 62% .9%, 71% .2%, 80% 1%, 89% .1%, 96% .8%, 100% 0%, 99.4% 9%, 100% 18%, 99.3% 30%, 100% 42%, 99.5% 55%, 100% 67%, 99.3% 79%, 100% 90%, 99.4% 100%, 92% 99.2%, 83% 100%, 74% 99.1%, 65% 100%, 56% 99.3%, 47% 100%, 38% 99.2%, 29% 100%, 20% 99.3%, 11% 100%, 3% 99.2%, 0% 100%, .6% 88%, 0% 76%, .7% 63%, 0% 51%, .6% 38%, 0% 26%, .7% 13%);
+}
+.card, .paper { padding-left: 50px; }
+.card.center, .paper.judgment, .paper.letter, .paper.twenty-letter { padding-left: 50px; }
+.card::before { inset: 10px 10px 10px 44px; border-color: rgba(120,80,40,.28); outline: none; }
+.card::after, .paper::after {
+  content: ""; position: absolute; pointer-events: none; inset: 0;
+  background:
+    radial-gradient(circle at 96% 4%, rgba(70,35,10,.35) 0 10px, transparent 26px),
+    radial-gradient(circle at 3% 97%, rgba(70,35,10,.28) 0 14px, transparent 34px),
+    linear-gradient(115deg, transparent 48%, rgba(120,80,40,.10) 49.5%, transparent 51%);
+}
+.paper { position: relative; }
+.code-card::after { inset: auto; }
+
+/* 明信片也是旧纸 */
+.postcard {
+  background:
+    var(--grain),
+    radial-gradient(circle at 90% 85%, rgba(120,72,30,.18) 0 5%, transparent 10%),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(110,62,22,.4) 100%),
+    linear-gradient(160deg, #f2e2bd, #e2c993);
+  background-size: 160px 160px, auto, auto, auto;
+}
+.pc-no { position: absolute; top: 74px; right: 20px; font-family: var(--fell); font-size: 12px; letter-spacing: .2em; color: var(--wax); border: 1px solid rgba(142,27,27,.5); padding: 1px 8px; transform: rotate(3deg); }
+
+/* 低语：烧焦的旧信 */
+.whisper {
+  color: #f1dfbc;
+  background:
+    var(--grain),
+    radial-gradient(ellipse at 50% 45%, rgba(92,58,30,.9), rgba(45,25,12,.97) 70%, #120a05 100%);
+  background-size: 160px 160px, auto;
+  border: 0;
+  box-shadow: 0 0 70px rgba(0,0,0,.85) inset, 0 0 0 1px rgba(160,90,40,.35), 0 14px 36px rgba(0,0,0,.7);
+  clip-path: polygon(0 3%, 6% 0, 15% 2%, 26% 0, 38% 2.5%, 50% .5%, 62% 2%, 74% 0, 86% 2.4%, 95% .3%, 100% 2%, 98.6% 20%, 100% 40%, 98.4% 60%, 100% 80%, 98.8% 97%, 90% 100%, 78% 97.6%, 66% 100%, 54% 98%, 42% 100%, 30% 97.8%, 18% 100%, 7% 98%, 0 100%, 1.4% 78%, 0 56%, 1.2% 34%, 0 16%);
+}
+
+/* 顶栏：记忆计数 */
+.frag-count { font: inherit; font-family: var(--fell); font-size: 13px; color: #f0d68c; background: rgba(0,0,0,.25); border: 1px solid rgba(201,162,74,.55); border-radius: 20px; padding: 2px 10px; cursor: pointer; letter-spacing: .08em; }
+.role-badge { margin-left: auto; }
+.frag-count { margin-left: 6px; }
+
+/* —— 数字 20 —— */
+.twenty { color: var(--wax); font-family: var(--fell); font-size: 1.25em; }
+.big20 { font-family: var(--fell); font-size: 120px; line-height: 1; text-align: center; color: rgba(142,27,27,.18); margin: -10px 0 -30px; letter-spacing: -.04em; }
+.chapter-head::after { content: "N° 20"; display: block; font-family: var(--fell); font-size: 11px; letter-spacing: .5em; color: rgba(201,162,74,.6); margin-top: 6px; }
+
+/* —— 记忆碎片 —— */
+.frag-step { margin: 18px 0; text-align: center; }
+.frag-head { font-family: var(--brush); font-size: 24px; color: #f0d68c; text-shadow: 0 2px 8px rgba(0,0,0,.7); letter-spacing: .2em; margin-bottom: 6px; }
+.frag {
+  position: relative; margin: 14px auto; max-width: 440px; padding: 16px 20px 18px; text-align: left;
+  background: var(--grain), linear-gradient(170deg, #f6ead0, #e3cb98);
+  background-size: 160px 160px, auto;
+  transform: rotate(var(--r, -1deg));
+  box-shadow: 0 10px 22px rgba(0,0,0,.5);
+  clip-path: polygon(0 6%, 8% 0, 22% 4%, 40% 0, 58% 5%, 76% 0, 92% 4%, 100% 0, 98% 50%, 100% 100%, 84% 95%, 66% 100%, 48% 96%, 30% 100%, 12% 95%, 0 100%, 2% 50%);
+  animation: fragIn .9s cubic-bezier(.2,.8,.2,1) both;
+}
+.frag::before { content: ""; position: absolute; left: 50%; top: -6px; width: 70px; height: 18px; transform: translateX(-50%) rotate(-3deg); background: rgba(230,215,170,.65); box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.frag-no { font-family: var(--fell); font-size: 11px; letter-spacing: .25em; color: var(--wax); }
+.frag-text { font-family: var(--brush); font-size: 21px; line-height: 1.7; color: #24324f; }
+.frag-step .muted { color: rgba(241,226,192,.75); }
+@keyframes fragIn { from { opacity: 0; transform: translateY(24px) rotate(calc(var(--r, -1deg) * 4)) scale(.92); filter: blur(3px); } to { opacity: 1; filter: none; } }
+.frag-list { padding-left: 1.6em; margin: 10px 0; }
+.frag-list li { font-family: var(--brush); font-size: 19px; line-height: 1.75; color: #24324f; animation: fragIn .7s both; }
+.frag-list li.miss { color: rgba(43,29,18,.3); }
+.frag-list li::marker { font-family: var(--fell); color: var(--wax); font-size: 13px; }
+.twenty-letter .frag-list li:nth-child(n+14) { color: #6b1d16; }
+
+/* —— 海龟汤 —— */
+.soup { font-family: var(--brush); font-size: 21px; line-height: 1.85; color: #24324f; border-left: 3px double rgba(142,27,27,.5); padding-left: 14px; }
+.cloze-text { font-size: 17px; line-height: 2.4; margin: 12px 0; }
+.blank { font: inherit; font-family: var(--brush); font-size: 19px; min-width: 70px; padding: 0 8px; margin: 0 3px; background: transparent; border: 0; border-bottom: 2px dashed rgba(43,29,18,.55); color: #24324f; cursor: pointer; }
+.blank.active { border-bottom-color: var(--wax); background: rgba(142,27,27,.08); }
+.blank.filled { border-bottom-style: solid; }
+.blank.ok { color: var(--ok); border-bottom-color: var(--ok); }
+.blank.bad { color: var(--wax); border-bottom-color: var(--wax); text-decoration: none; }
+.cloze-bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 14px 0; }
+.word { font: inherit; font-size: 15px; padding: 5px 12px; border: 1px solid rgba(120,80,40,.55); background: rgba(255,250,235,.6); border-radius: 2px; cursor: pointer; transform: rotate(-1deg); box-shadow: 0 2px 3px rgba(0,0,0,.12); }
+.word:nth-child(2n) { transform: rotate(1.2deg); }
+.word.used { opacity: .3; }
+
+/* —— 狼人杀卡牌证物 —— */
+.ev-card { margin: 8px auto; width: 150px; padding: 14px 10px; background: linear-gradient(170deg, #1d1a2a, #0d0b14); color: #e9dcc0; border: 2px solid #c9a24a; border-radius: 10px; text-align: center; box-shadow: 0 0 20px rgba(201,162,74,.25) inset; }
+.ev-card-role { font-family: var(--brush); font-size: 26px; color: #f0d68c; }
+.ev-card-eye { font-size: 40px; color: #c9a24a; line-height: 1.2; }
+.ev-card-text { font-size: 12px; line-height: 1.6; }
+
+/* —— 七件礼物 —— */
+.gift-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin: 16px 0; }
+.gift-card { position: relative; height: 150px; border: 0; padding: 0; background: none; cursor: pointer; perspective: 800px; font: inherit; }
+.gift-card > div { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 10px; backface-visibility: hidden; transition: transform .8s cubic-bezier(.3,.7,.2,1); box-shadow: 0 8px 16px rgba(0,0,0,.35); }
+.gift-back { background: var(--grain), linear-gradient(160deg, #6b4626, #3d2614); background-size: 160px 160px, auto; color: #f0d68c; border: 1px solid rgba(201,162,74,.6); }
+.gift-front { background: var(--grain), linear-gradient(160deg, #f6ead0, #e3cb98); background-size: 160px 160px, auto; transform: rotateY(180deg); color: #24324f; }
+.gift-front b { font-family: var(--brush); font-weight: 400; font-size: 21px; color: var(--wax); }
+.gift-front i { font-size: 13px; line-height: 1.5; }
+.gift-card.open .gift-back { transform: rotateY(-180deg); }
+.gift-card.open .gift-front { transform: rotateY(0); }
+.wax.small { width: 48px; height: 48px; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; color: #f3dcc0; background: radial-gradient(circle at 35% 30%, var(--wax-2), var(--wax) 55%, #4f0d0d); font-family: var(--fell); box-shadow: 0 3px 6px rgba(0,0,0,.4); }
+
+/* —— 照片来源 —— */
+.credits { font-size: 11px; opacity: .6; margin-top: 6px; }
+.credits a { color: inherit; }
+.dossier-table td { padding: 2px 10px 2px 0; vertical-align: top; }
+.dossier-table td:first-child { color: var(--ink-soft); white-space: nowrap; }
+
+/* 华丽一点：章节标题金色描边与光晕 */
+.chapter-head h1 { background: linear-gradient(180deg, #fbe8b6, #c9a24a 60%, #8b5e34); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 2px 6px rgba(0,0,0,.7)); }
+.chapter-head::before { content: "❦"; display: block; color: rgba(201,162,74,.7); font-size: 20px; }
+
+@media print { #bgphoto { display: none; } .card, .paper { clip-path: none; } }
+.stage { filter: drop-shadow(0 14px 16px rgba(0,0,0,.45)); }
+.code-card::after { content: ""; inset: auto; right: -14px; bottom: -14px; width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--wax-2), var(--wax) 55%, #4f0d0d); opacity: .85; }
+body.has-bg { background: transparent; }
+body.has-bg #bgphoto { filter: sepia(.6) saturate(.8) brightness(.55) contrast(1.05) blur(1px); }
+.topbar .caseno { font-size: 12px; white-space: nowrap; }
+@media (max-width: 420px) { .topbar .caseno { font-size: 11px; letter-spacing: 0; } .role-badge { font-size: 12px; padding: 1px 8px; } }
+.gift-back small { color: rgba(240,214,140,.75); letter-spacing: .1em; }

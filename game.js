@@ -29,6 +29,7 @@
     return String(str)
       .replaceAll("{plaintiffMessage}", CONFIG.plaintiffMessage)
       .replaceAll("{X}", CONFIG.plaintiffName)
+      .replaceAll("{herZh}", CONFIG.herNameZh || CONFIG.herName)
       .replaceAll("{her}", CONFIG.herName)
       .replaceAll("{assistant}", CONFIG.assistantName)
       .replaceAll("{plaintiff}", CONFIG.plaintiffReveal)
@@ -40,6 +41,8 @@
   const QUILL = '<svg viewBox="0 0 64 64" width="18" height="18" aria-hidden="true"><path d="M58 4C40 6 24 18 16 36l-4 10 3 3 10-4C42 37 56 22 58 4z" fill="currentColor" opacity=".85"/><path d="M14 48L4 60" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M50 12C38 18 28 28 20 42" stroke="#1a120b" stroke-width="1.5" fill="none" opacity=".5"/></svg>';
   const norm = (s) => String(s || "").trim().toUpperCase().replace(/\s+/g, "");
   const codeOf = (key) => CONFIG.codes[key];
+  const codeList = (key) => { const c = CONFIG.codes[key]; return Array.isArray(c) ? c : [c]; };
+  const codeShow = (key) => codeList(key)[0];
 
   // ---------- 角色与存档 ----------
   const params = new URLSearchParams(location.search);
@@ -49,7 +52,7 @@
   let role = params.get("role") || localStorage.getItem("cf20_role");
   if (role && !["counsel", "assistant"].includes(role)) role = null;
 
-  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, done: false, ledger: {}, flagLedger: {}, passed: {} });
+  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, frags: [], done: false, ledger: {}, flagLedger: {}, passed: {} });
   let S = null;
 
   function load() {
@@ -118,12 +121,35 @@
   }
 
   // ---------- 布局 ----------
+  function setBg(chapter) {
+    let bg = document.getElementById("bgphoto");
+    if (!bg) { bg = el("div", { id: "bgphoto" }); document.body.prepend(bg); }
+    const list = (chapter && chapter.bg) || [];
+    const key = list.join("|");
+    if (bg.dataset.key === key) return;
+    bg.dataset.key = key;
+    bg.classList.remove("on");
+    document.body.classList.remove("has-bg");
+    if (!list.length) { bg.style.backgroundImage = ""; return; }
+    // 依次尝试，第一张能加载的就用
+    const tryOne = (i) => {
+      if (i >= list.length) return;
+      const im = new Image();
+      im.onload = () => { if (bg.dataset.key !== key) return; bg.style.backgroundImage = 'url("' + list[i] + '")'; document.body.classList.add("has-bg"); requestAnimationFrame(() => bg.classList.add("on")); };
+      im.onerror = () => tryOne(i + 1);
+      im.src = list[i];
+    };
+    tryOne(0);
+  }
+
   function shell(chapter) {
     const root = app();
     root.innerHTML = "";
+    setBg(chapter);
     const header = el("header", { class: "topbar" },
       el("div", { class: "caseno" }, el("span", { class: "quill", html: QUILL }), "No. " + CONFIG.caseNo),
       el("div", { class: "role-badge " + role }, role === "counsel" ? "⚖️ " + CONFIG.herName : "📎 " + CONFIG.assistantName),
+      role === "counsel" ? el("button", { class: "frag-count", title: "记忆碎片", onclick: openFragments }, "✧ " + (S.frags || []).length + "/20") : null,
       role === "counsel" ? el("button", { class: "icon-btn", title: "证物", onclick: openExhibits }, "📁") : null
     );
     root.append(header);
@@ -139,7 +165,9 @@
     root.append(main);
     root.append(el("footer", { class: "foot" },
       el("button", { class: "link", onclick: confirmReset }, "重新开始"),
-      el("span", {}, "CASE FILE No. 20 · 纯属虚构")
+      el("span", {}, "CASE FILE No. 20 · 纯属虚构"),
+      CONFIG.credits ? el("details", { class: "credits" }, el("summary", {}, "照片来源"),
+        CONFIG.credits.map(([n, u]) => el("div", {}, el("a", { href: u, target: "_blank", rel: "noopener" }, n), " · Wikimedia Commons"))) : null
     ));
     return main;
   }
@@ -270,6 +298,17 @@
     main.append(STEPS.judgment({}, null, true));
     main.append(STEPS.dossier({}, null, true));
     main.append(STEPS.letter({}, null, true));
+    main.append(STEPS.gifts({}, null, true));
+  }
+
+  function openFragments() {
+    const have = new Set(S.frags || []);
+    const box = el("div", { class: "modal", onclick: (e) => { if (e.target === box) box.remove(); } },
+      el("div", { class: "modal-inner letterpaper" },
+        el("h3", {}, "✧ 记忆碎片 " + have.size + " / 20"),
+        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss" }, have.has(i + 1) ? f : "……"))),
+        btn("关闭", () => box.remove(), "secondary")));
+    document.body.append(box);
   }
 
   function openExhibits() {
@@ -370,6 +409,7 @@
   STEPS.postcard = (s, done) => el("div", { class: "pc-wrap" },
     el("article", { class: "postcard" },
       el("div", { class: "pc-head" }, el("span", { class: "pc-title" }, "Carte Postale"), el("span", { class: "pc-stamp" }, "X")),
+      s.no ? el("div", { class: "pc-no" }, "NO. " + String(s.no).padStart(2, "0") + " / 20") : null,
       el("div", { class: "pc-mark" }, el("span", {}, t(s.place || ""))),
       el("div", { class: "pc-text", html: t(s.text) }),
       el("div", { class: "pc-sign" }, t(s.sign || ""))),
@@ -575,7 +615,7 @@
 
   STEPS.codeGive = (s, done) => card("center code-card",
     el("div", { class: "text", html: t(s.text) }),
-    el("div", { class: "code" }, codeOf(s.code)),
+    el("div", { class: "code" }, codeShow(s.code)),
     el("div", { class: "muted" }, "用嘴说，别给 TA 看屏幕。"),
     btn("我已经告诉 TA 了", done));
 
@@ -612,11 +652,11 @@
     }
     if (s.accept) return renderGateRaw(s.text, s.accept, () => done(), s.success);
     const code = codeOf(s.code);
-    if (code && typeof code === "object") {
+    if (code && typeof code === "object" && !Array.isArray(code)) {
       const map = Object.fromEntries(Object.entries(code).map(([k, v]) => [norm(v), k]));
       return renderGateRaw(s.text, Object.values(code), (hit) => { S.bucket = map[norm(hit)]; save(); done(); }, s.success);
     }
-    return renderGateRaw(s.text, [code], () => done(), s.success);
+    return renderGateRaw(s.text, codeList(s.code), () => done(), s.success);
   };
 
   function bucketOf(score) { return score >= 8 ? "strong" : score >= 4 ? "medium" : "weak"; }
@@ -650,19 +690,19 @@
   STEPS.jurySelect = (s, done) => {
     const struck = new Set();
     const c = card("", el("div", { class: "prompt", html: t(s.prompt) }));
-    const counter = el("div", { class: "counter-line" }, "已踢掉 0 / " + s.strikes);
+    const counter = el("div", { class: "counter-line" }, "已请走 0 / " + s.strikes);
     c.append(counter);
     const grid = el("div", { class: "jurors" });
     const cards = s.jurors.map((j, i) => {
       const jc = el("button", { class: "juror", onclick: () => {
         if (struck.has(i)) { struck.delete(i); jc.classList.remove("struck"); }
-        else { if (struck.size >= s.strikes) return toast("最多踢掉 " + s.strikes + " 个"); struck.add(i); jc.classList.add("struck"); }
-        counter.textContent = "已踢掉 " + struck.size + " / " + s.strikes;
+        else { if (struck.size >= s.strikes) return toast("最多请走 " + s.strikes + " 个"); struck.add(i); jc.classList.add("struck"); }
+        counter.textContent = "已请走 " + struck.size + " / " + s.strikes;
       } }, el("div", { class: "jn" }, j.name), el("div", { class: "jj" }, j.job));
       grid.append(jc); return jc;
     });
     c.append(grid);
-    const submit = btn("确认陪审团", () => {
+    const submit = btn("天亮了", () => {
       let delta = 0, missed = 0;
       s.jurors.forEach((j, i) => {
         const st = struck.has(i);
@@ -670,10 +710,10 @@
         if (st && !j.biased) delta -= 0.5;
         if (!st && j.biased) missed++;
         cards[i].disabled = true;
-        cards[i].append(el("div", { class: "jtag " + (j.biased ? "bad" : "ok") }, j.biased ? "⚠️ 有偏见" : "公正"));
+        cards[i].append(el("div", { class: "jtag " + (j.biased ? "bad" : "ok") }, j.biased ? "🐺 狼" : "好人"));
       });
       addScore(delta); save(); submit.remove();
-      c.append(el("div", { class: "feedback", html: missed ? "还有 " + missed + " 位有偏见的陪审员留在了陪审团里。" : "完美！有偏见的候选人都被你回避掉了。" }));
+      c.append(el("div", { class: "feedback", html: missed ? "还有 " + missed + " 匹狼，混在陪审席里。" : "三匹狼，全部出局。<br>预言家的眼睛，从来不会错。" }));
       c.append(btn("继续", done));
     });
     c.append(submit);
@@ -840,11 +880,100 @@
       env.remove();
       c.append(el("div", { class: "doc-label" }, "Z号证物 · 密封"),
         el("article", { class: "paper letter" }, t(CONFIG.letter)));
-      if (CONFIG.giftHint) c.append(el("div", { class: "gift" }, "🎁 " + t(CONFIG.giftHint)));
       if (!embedded) c.append(btn("完成", done));
     } }, el("div", { class: "env-seal" }, "Z"), el("div", {}, "Z号证物 · 密封 · 点击拆开"));
     c.append(el("h3", {}, "最后一件证物"), env);
     return c;
+  };
+
+  // ---- 记忆碎片 ----
+  STEPS.fragment = (s, done) => {
+    const fresh = s.ids.filter((i) => !S.frags.includes(i));
+    S.frags = Array.from(new Set(S.frags.concat(s.ids))).sort((a, b) => a - b); save();
+    const fc = document.querySelector(".frag-count"); if (fc) fc.textContent = "✧ " + S.frags.length + "/20";
+    return el("div", { class: "frag-step" },
+      el("div", { class: "frag-head" }, fresh.length ? "拾到" + (s.ids.length > 1 ? " " + s.ids.length + " 片" : "一片") + "记忆" : "记忆碎片"),
+      s.ids.map((i, k) => el("div", { class: "frag", style: "--r:" + ((k % 2 ? 1 : -1) * (1 + (i % 3))) + "deg;animation-delay:" + (k * 0.25) + "s" },
+        el("div", { class: "frag-no" }, "No." + String(i).padStart(2, "0") + " / 20"),
+        el("div", { class: "frag-text" }, FRAGMENTS[i - 1]))),
+      el("div", { class: "muted center" }, "已收集 " + S.frags.length + " / 20"),
+      btn("收好", done));
+  };
+
+  // ---- 填空还原 ----
+  STEPS.cloze = (s, done) => {
+    const fill = new Array(s.answers.length).fill(null);
+    let active = 0;
+    const c = card("cloze", el("div", { class: "prompt", html: t(s.prompt) }));
+    const textBox = el("div", { class: "cloze-text" });
+    const bank = el("div", { class: "cloze-bank" });
+    const blanks = [];
+    const parts = s.text.split(/\{\{(\d+)\}\}/);
+    parts.forEach((p, i) => {
+      if (i % 2 === 0) { textBox.append(el("span", { html: t(p) })); return; }
+      const idx = +p;
+      const b = el("button", { class: "blank", onclick: () => {
+        if (fill[idx] != null) { fill[idx] = null; }
+        active = idx; paint();
+      } }, "＿＿＿");
+      blanks[idx] = b; textBox.append(b);
+    });
+    const words = s.bank.map((w) => el("button", { class: "word", onclick: () => {
+      if (active == null) return toast("先点一个空格");
+      const was = fill.indexOf(w); if (was >= 0) fill[was] = null;
+      fill[active] = w;
+      const nxt = fill.findIndex((f) => f == null); active = nxt >= 0 ? nxt : null; paint();
+    } }, w));
+    bank.append(...words);
+    function paint() {
+      blanks.forEach((b, i) => { b.textContent = fill[i] || "＿＿＿"; b.classList.toggle("active", i === active); b.classList.toggle("filled", fill[i] != null); });
+      words.forEach((w) => w.classList.toggle("used", fill.includes(w.textContent)));
+    }
+    paint();
+    const submit = btn("还原真相", () => {
+      if (fill.some((f) => f == null)) return toast("还有空没填");
+      let right = 0;
+      fill.forEach((f, i) => { const ok = f === s.answers[i]; if (ok) right++; blanks[i].classList.add(ok ? "ok" : "bad"); blanks[i].disabled = true; if (!ok) blanks[i].textContent = f + " → " + s.answers[i]; });
+      addScore(right * (s.perCorrect || 0.5)); save();
+      bank.remove(); submit.remove();
+      c.append(el("div", { class: "feedback", html: right === s.answers.length ? "全部还原。<br>汤底，和你写的一字不差。" : "还原了 " + right + " / " + s.answers.length + "。<br>红色的地方，是那晚真正发生的事。" }), btn("继续", done));
+    });
+    c.append(textBox, bank, submit);
+    return c;
+  };
+
+  // ---- 二十件小事 ----
+  STEPS.twenty = (s, done) => {
+    const have = new Set(S.frags);
+    return el("div", {},
+      el("div", { class: "doc-label" }, "第二十封信 · 二十件小事"),
+      el("article", { class: "paper twenty-letter" },
+        el("div", { class: "big20" }, "20"),
+        el("p", { class: "doc-zh" }, "X 收了十年的东西，一共二十片。"),
+        el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss", style: "animation-delay:" + (i * 0.12) + "s" }, f))),
+        el("p", { class: "doc-sign" }, "— 十岁的你，和" + CONFIG.assistantName)),
+      btn("继续", done));
+  };
+
+  // ---- 七件实物 ----
+  STEPS.gifts = (s, done, embedded) => {
+    const list = typeof GIFTS !== "undefined" ? GIFTS : [];
+    const opened = new Set();
+    const go = embedded ? null : btn("继续", done);
+    if (go) go.style.visibility = "hidden";
+    const grid = el("div", { class: "gift-grid" }, list.map((g, i) => {
+      const cardEl = el("button", { class: "gift-card", onclick: () => {
+        cardEl.classList.add("open"); opened.add(i);
+        if (go && opened.size === list.length) go.style.visibility = "visible";
+      } },
+        el("div", { class: "gift-back" }, el("span", { class: "wax small" }, "G" + (i + 1)), el("small", {}, "未登记证物")),
+        el("div", { class: "gift-front" }, el("b", {}, g.name), el("i", {}, g.note)));
+      return cardEl;
+    }));
+    return el("div", {},
+      el("div", { class: "doc-label" }, "七件不在卷宗里的证物"),
+      card("center letterpaper", el("p", { html: t(CONFIG.giftHint || "") }), grid, el("div", { class: "muted" }, "一张一张，揭开它们的封条。")),
+      go);
   };
 
   STEPS.photo = (s, done) => {

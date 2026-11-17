@@ -633,3 +633,31 @@ body { background-color: #4a3524; }
 .stage { filter: drop-shadow(0 10px 12px rgba(0,0,0,.3)); }
 #feathers .feather { opacity: .75; }
 .chapter-head, .topbar, .foot, .back-btn, .doc-label, .frag-head { text-shadow: 0 1px 3px rgba(0,0,0,.85), 0 0 12px rgba(0,0,0,.55); } .chapter-head h1 { filter: drop-shadow(0 2px 4px rgba(0,0,0,.9)); }
+
+/* ---- 剧本杀：角色本 · 线索卡 · 指认 ---- */
+.paper.script h4 { font-family: var(--brush); font-weight: 400; font-size: 20px; color: var(--wax); margin: 16px 0 4px; }
+.paper.script p { margin: 4px 0; }
+.sc-title { text-align: center; font-family: var(--brush); font-size: 30px !important; margin-bottom: 2px !important; }
+.sc-meta { text-align: center; font-size: 12px; color: var(--ink-soft); letter-spacing: .05em; }
+.sc-warn { text-align: center; margin-top: 16px !important; font-style: italic; color: var(--sepia); }
+.paper.notes { transform: rotate(.5deg); }
+.paper.notes p { font-family: var(--brush); font-size: 18px; line-height: 1.85; color: #24324f; }
+.suspects dt { color: var(--wax); }
+.clue-step { margin: 18px 0; text-align: center; }
+.clue-step .muted { color: rgba(246,231,198,.85); }
+.clue-card { position: relative; max-width: 420px; margin: 10px auto; text-align: left; padding: 14px 18px 16px; background: var(--grain), linear-gradient(170deg, #fbf3dd, #ecdcb3); background-size: 160px 160px, auto; border-left: 6px solid var(--wax); box-shadow: 0 8px 18px rgba(0,0,0,.4); transform: rotate(-1deg); animation: fragIn .8s both; }
+.clue-card::after { content: "🔍"; position: absolute; right: 12px; top: 10px; opacity: .35; }
+.clue-tag { font-family: var(--fell); font-size: 11px; letter-spacing: .25em; color: var(--wax); }
+.clue-title { font-family: var(--brush); font-size: 22px; color: #24324f; margin: 2px 0 4px; }
+.clue-text { font-size: 15px; line-height: 1.7; color: #3a2a1a; }
+.clue-text b { color: var(--wax); }
+.clue-card.small { transform: none; margin: 8px 0; padding: 10px 14px; animation: none; }
+.clue-card.small .clue-title { font-size: 18px; }
+.clue-card.small .clue-text { font-size: 13px; }
+.clue-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.clue-pick .check { margin: 0; font-size: 14px; padding: 8px 10px; }
+.deduce h3 { font-size: 20px !important; margin-top: 14px !important; }
+.deduce .opt b { font-family: var(--brush); font-weight: 400; font-size: 19px; }
+.deduce .opt .muted { margin: 0; font-size: 12px; }
+.feedback.bad { border-left-color: var(--wax); }
+.topbar { gap: 6px; } .topbar .role-badge, .topbar .frag-count { white-space: nowrap; font-size: 12px; padding: 2px 8px; } .topbar .icon-btn { padding: 0 2px; }

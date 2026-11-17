@@ -78,7 +78,7 @@ const FRAGMENTS = [
   { text: "2024.5.31 · 关傲予陪我过的第一个生日！喜欢！！在酒店过生日的传统，就此种下了，哈哈哈哈。", img: "assets/mem/m07.jpg" },
   { text: "2024.6.9 · 人生中第一个漫展，哇啊啊啊。", img: "assets/mem/m08.jpg" },
   { text: "2024.11.24 · 第二个生日！没有照片，不嘻嘻……", img: "none" },
-  { text: "2025.1.1 · 2025 年的第一个太阳，是一起看的。", img: "" },
+  { text: "2025.1.1 · 2025 年的第一个太阳，是一起看的。", img: "assets/mem/m10.jpg" },
   { text: "2025.2.5 · 用一年之约，赴十年之约。", img: "assets/mem/m11.jpg" },
   { text: "2025.5.25 · 我们毕业啦！", img: "assets/mem/m12.jpg" },
   { text: "2025.6.12 · 西藏，我们来啦！少年游～", img: "assets/mem/m13.jpg" },
@@ -89,6 +89,38 @@ const FRAGMENTS = [
   { text: "2026.3.22 · 夏威夷。我一直在哭。", img: "assets/mem/m18.jpg" },
   { text: "2026.3.28 · 波士顿。我一直在哭。", img: "assets/mem/m19.jpg" },
   { text: "2026.11.24 · 二十岁。这一页，今天正在写。", img: "" }
+];
+
+/* ---- 线索卡（右上角 🔍）。to = 这条线索指向谁 ---- */
+const CLUES = {
+  c1:  { to: "birds", title: "门口的羽毛", text: "信封旁边，落着一根很小的羽毛，蓝白色的。<br>芝加哥的鸽子，是灰的。" },
+  c2:  { to: "birds", title: "一把小米", text: "传票上写着：原告收下了<b>一把小米</b>，作为信物。<br>什么样的原告，会收小米当报酬？" },
+  c3:  { to: "birds", title: "\"带回家的那天\"", text: "协议签于\"被告把原告<b>带回家</b>的那天\"。<br>原告不是和她一起长大的人——是被她带回家的。" },
+  c4:  { to: "birds", title: "红色的远房亲戚", text: "X 说，火烈鸟是它的远房亲戚：\"它<b>也</b>是一只鸟。\"<br>——也？" },
+  c5:  { to: "birds", title: "翅膀的声音", text: "法庭最后一排，有什么东西<b>扑棱</b>了一下。<br>你回头，那里没有人。" },
+  c6:  { to: "birds", title: "两个小影子", text: "博物馆的玻璃上，你的肩膀上停着<b>两个</b>小小的影子。<br>X，可能不止一个。" },
+  c7:  { to: "birds", title: "叉子形的印子", text: "协议签名旁边，有两个小小的印子：<b>ψ ψ</b>。<br>不是指印。是脚印。" },
+  c8:  { to: "birds", title: "W 的最后一句话", text: "W 临走前说：\"X 从来没有离开过<b>北京</b>。<b>它们</b>一直在等她回家。\"<br>——它们？" },
+  c9:  { to: "birds", title: "黄色的羽毛", text: "唱片架后面，有什么东西轻轻啄了你一下，留下一根<b>黄色</b>的羽毛。<br>现在你手里，一蓝，一黄。" },
+  c10: { to: "birds", title: "\"早安\"", text: "X 在证人席上说：\"她每天早上，都会跟我说<b>早安</b>。\"<br>只有和她住在一起的，才会知道。" },
+  c11: { to: "birds", title: "八号陪审员", text: "Iris 说：\"<b>鸟</b>不会说爱。可它们会等你回家。\"<br>她为什么偏偏说起鸟？" },
+  r1:  { to: "ten", title: "小时候的日记", text: "日记里，小时候的你写过\"永远不长大\"。<br>X，会不会就是小时候的你？" },
+  r2:  { to: "ten", title: "十八岁那晚的帖子", text: "\"18岁了，但我永远是个小孩。\"<br>X 说，那晚你又答应了他一次。" },
+  r3:  { to: "sunny", title: "助手的暗号", text: "{assistant} 手里，总有你看不到的东西。<br>TA 是不是知道得太多了？" },
+  r4:  { to: "w", title: "W 的沉默", text: "W 知道那一天的一切，<br>却只肯说三个词：是，不是，不重要。" }
+};
+
+/* ---- 嫌疑人（终章指认 X）。elim = 选错时，为什么不是 TA ---- */
+const SUSPECTS = [
+  { id: "ten", name: "十岁的关傲予", note: "动机：你答应过她，永远不长大。",
+    elim: "协议上写的是\"被告把原告<b>带回家</b>的那天\"。<br>十岁的你，不需要被谁带回家。<br>何况——十岁的你，不会掉羽毛。" },
+  { id: "w", name: "证人 W", note: "动机：不明。TA 知道得太多。",
+    elim: "W 是证人。证人不能同时是原告。<br>而且 W 亲口说过：X 从来没有离开过<b>北京</b>——可 W 今天就站在芝加哥。" },
+  { id: "sunny", name: "Sunny Wu（你的助手）", note: "动机：不明。暗号都在 TA 手里。",
+    elim: "Sunny 今天一直在你身边，可 X 的明信片，每一次都比你们先到。<br>再说，W 说过：X 从来没有离开过<b>北京</b>。" },
+  { id: "judge", name: "法官", note: "动机：无。从不站在任何一边。",
+    elim: "法官审过很多案子，从不站在任何一边。<br>况且，法官的袍子底下，没有翅膀。" },
+  { id: "birds", name: "蛋清和蛋黄", note: "被告北京家里的两位老住户。不会说话。" }
 ];
 
 /* ---- 终章的四件实物（我送她的）---- */
@@ -123,9 +155,29 @@ const CHAPTERS = [
   id: "ch0", title: "序章", subtitle: "火漆", place: "清晨 · 门口",
   bg: ["assets/sleeve-x.jpg"],
   counsel: [
+    { type: "document", docTitle: "剧本 · 角色本", cls: "script", html: `
+<h3 class="sc-title">《第二十号档案》</h3>
+<p class="sc-meta">类型：本格推理 · 微恐 · 情感　｜　人数：2（被告 · 助理）　｜　时长：一整天</p>
+<h4>【故事背景】</h4>
+<p>芝加哥，2026 年 11 月 24 日。湖面吹来的风，已经很冷了。</p>
+<p>今天是 Aileen 的二十岁生日。她原本以为，这会是普通的一天：上课，吃饭，收几条祝福，在宿舍里给远在北京的家里打一个视频。</p>
+<p>直到清晨，一封没有邮票的信，出现在她的门口。</p>
+<p>寄信的人自称 <b>Mr. X</b>。他说，她欠他一个约定。他说，他已经等了很久。他说，今晚十二点之前，要她给一个交代。</p>
+<h4>【你的身份】</h4>
+<p>你是 <b>Aileen</b>，本案被告。<br>你也是你自己的律师——没有人会替你出庭。</p>
+<h4>【你的任务】</h4>
+<p>一、为自己辩护，赢下这场官司；<br>二、查出 <b>Mr. X</b> 到底是谁；<br>三、还原这个案子，真正的意义。</p>
+<h4>【规则】</h4>
+<p>· 线索藏在今天要去的每一个地方。到了现场，手机才会解锁下一章。<br>
+· 你的助理 {assistant}，手里有你看不到的东西。TA 只在你问的时候回答。<br>
+· 右上角 🔍 是你收集到的线索，✧ 是记忆碎片。随时可以翻看。<br>
+· 不是所有线索都说真话。<br>
+· 终章，你需要当着 X 的面，说出它的名字。</p>
+<p class="sc-warn">准备好了，就翻开第一页。</p>` },
     { type: "whisper", text: "2026 年 11 月 24 日。<br>天还没亮透。<br><br>门口躺着一个信封。<br>没有邮票，没有寄件人。<br>封口的火漆，还是温的。<br><br>旁边落着一根小小的羽毛。" },
     { type: "award", flag: "exX" },
     { type: "bag", items: ["exX"], text: "档案袋上，只有一个铅笔写的 <b>X</b>。<br>相框角里是空的——<br>像是有人，故意把照片拿走了。" },
+    { type: "clue", id: "c1" },
     { type: "postcard", no: 1, place: "CHICAGO · 06:00", text: "{her}，<br>好久不见。<br><br>你大概已经忘了我。<br>可你答应过我的事，<br>我一直记着。", sign: "— X" },
     { type: "document", docTitle: "被告档案", html: `
 <p class="doc-court">{court}</p>
@@ -166,6 +218,36 @@ const CHAPTERS = [
   <div class="sm-stamp">CIRCUIT COURT OF TIME<br>THIS SUMMONS WAS POSTED ON<br><b>24 NOV 2026</b><br><span class="sm-scrawl">𝒳 ~~~</span><br>GREFFIER</div>
 </div>
 <p class="sm-zh">【译】X 告你：你答应过永远不长大，可你今天二十岁了。<br>今天上午十点，到联邦广场出庭。不来，就缺席判决。</p>` },
+    { type: "clue", id: "c2" },
+    { type: "clue", id: "c3" },
+    { type: "document", docTitle: "案情摘要 · CASE BRIEF", html: `
+<p class="doc-court">{court}</p>
+<table class="dossier-table">
+<tr><td>案件编号</td><td>{caseNo}</td></tr>
+<tr><td>原告</td><td>Mr. X（身份不明，从未露面）</td></tr>
+<tr><td>被告</td><td>Aileen（关傲予），20 岁</td></tr>
+<tr><td>案由</td><td>违反《永远不长大协议》</td></tr>
+<tr><td>原告诉求</td><td>被告承认自己"长大了"，并给出交代</td></tr>
+<tr><td>开庭</td><td>今晚 · 时间巡回法院</td></tr>
+</table>
+<h3>本案疑点</h3>
+<ol class="doc-paras">
+<li><b>原告是谁？</b>传票没有地址，没有照片，只有一个 X。</li>
+<li><b>协议原件在哪？</b>原告声称有一份签了名的协议，却没有附在传票里。</li>
+<li><b>"她去了芝加哥，就把家忘了。"</b>原告的这句指控，是真的吗？</li>
+<li><b>原告为什么偏偏挑今天？</b></li>
+</ol>
+<p class="doc-footnote">每解开一个疑点，案子就离真相近一步。</p>` },
+    { type: "document", docTitle: "嫌疑人名单 · 谁是 X？", html: `
+<p>能写出这封信的，只有这几个人。</p>
+<dl class="lawlib suspects">
+<dt>① 十岁的关傲予</dt><dd>当年说"永远不长大"的人。如果有谁会为这句话记仇，大概就是她。</dd>
+<dt>② 证人 W</dt><dd>身份不明。据说知道你每年生日的秘密。</dd>
+<dt>③ {assistant}（你的助手）</dt><dd>今天一直跟在你身边。所有暗号，都在 TA 手里。</dd>
+<dt>④ 法官</dt><dd>时间巡回法院的法官。没有人见过 TA 的脸。</dd>
+<dt>⑤ 蛋清和蛋黄</dt><dd>你北京家里的两位老住户。不会说话。</dd>
+</dl>
+<p class="doc-footnote">把怀疑记在心里。终章，你只有一次当面指认的机会。</p>` },
 
     { type: "choice", prompt: "没有人会替你出庭。",
       options: [
@@ -173,10 +255,22 @@ const CHAPTERS = [
         { label: "这是谁的恶作剧？", feedback: "你把纸翻过来。<br>背面有一行极小的字：<br><br><i>\"不是。\"</i>" }
       ] },
     { type: "codeGive", text: "你不是一个人。<br>把你的<b>生日</b>，作为暗号告诉助手。", code: "ch0_toAssistant" },
+    { type: "clue", id: "r3" },
     { type: "gate", text: "助手会报出你出生的<b>那一年</b>：", code: "ch0_toCounsel",
       success: "{assistant} 会一直在你身边。<br>有些东西，只有 TA 看得见。" }
   ],
   assistant: [
+    { type: "document", docTitle: "剧本 · 角色本（助理）", cls: "script", html: `
+<h3 class="sc-title">《第二十号档案》</h3>
+<h4>【你的身份】</h4>
+<p>你是 <b>{assistant}</b>，被告 Aileen 的助理。<br>你是今天唯一知道全部真相的人。</p>
+<h4>【你知道的秘密】</h4>
+<p>Mr. X 是<b>蛋清和蛋黄</b>——她北京家里的两只鸟。它们告她"长大"，其实只是想确认：长大以后的她，还会不会快乐。</p>
+<h4>【你的任务】</h4>
+<p>一、陪她走完今天的每一站；<br>二、她问的时候，才给她信息；她卡住的时候，轻轻推一把；<br>三、<b>绝不说出 X 是谁。</b>让她自己推理出来。</p>
+<h4>【如果她怀疑你】</h4>
+<p>嫌疑人名单里有你。这是剧本故意的。<br>她问"你是不是 X"，你可以说：<i>"我有不在场证明——我今天一直和你在一起。可 X 的信，每一次都比我们先到。"</i></p>
+<p class="sc-warn">终章，她要当着 X 的面指认。在那之前，守住秘密。</p>` },
     { type: "whisper", text: "今天，Aileen 会收到一封信。<br>署名是 {X}。<br><br>你知道的，比她多。<br>别一次全说出来。" },
     { type: "gate", text: "输入她报给你的暗号（她的生日）：", code: "ch0_toAssistant", success: "卷宗已经打开。" },
     { type: "document", docTitle: "🔒 守则", html: `
@@ -203,9 +297,12 @@ const CHAPTERS = [
     { type: "geo", place: "plaza", text: "去广场。<br>站到它的影子里。" },
     { type: "gate", text: "它叫什么？", accept: ["FLAMINGO", "火烈鸟", "红鹤", "THE FLAMINGO"],
       success: "Calder 的《火烈鸟》。<br>它的影子里压着一张纸条，墨迹未干：<br><br><i>\"进去。看看他们怎么审判别人。<br>记住：法庭上，也有狼。\"</i>" },
+    { type: "clue", id: "c4" },
     { type: "note", title: "旁听", text: "找一间正在开庭的法庭，坐在最后一排。<br>不要说话。<br><br>☐ 听到一次 <i>\"Objection.\"</i><br>☐ 法官看了你一眼<br>☐ 你数清楚了，法庭里有几个人<br>☐ 你听见了自己的心跳" },
     { type: "whisper", text: "法庭，也是一个舞台。<br><br>你想起来，<br>你们第一次一起站上舞台的那天。" },
     { type: "fragment", ids: [3, 4] },
+    { type: "whisper", text: "法官敲下法槌的那一刻，<br>旁听席最后一排，<br>有什么东西扑棱了一下。<br><br>你回过头。<br>座位是空的。<br>只有椅背上，沾着一点灰白的绒毛。" },
+    { type: "clue", id: "c5" },
     { type: "choice", prompt: "传票在你手里。<br>你要怎么回应？",
       options: [
         { label: "撕了它", score: -1, repeat: true,
@@ -227,8 +324,15 @@ const CHAPTERS = [
       ] },
     { type: "award", flag: "exA" }, { type: "award", flag: "exB" },
     { type: "bag", items: ["exA", "exB"], text: "两件物证，封入袋中。" },
+    { type: "clue", id: "r1" },
+    { type: "clue", id: "r2" },
     { type: "whisper", text: "你在最后一页签下：<br><i>Aileen</i>。<br><br>墨水，比平时红了一点。" },
     { type: "photo", key: "ch1", prompt: "在红色的影子下，留一张照片。" },
+    { type: "document", docTitle: "调查笔记 · 第一章", cls: "notes", html: `
+<p><b>已知：</b>X 自称和火烈鸟是亲戚，说它"也是一只鸟"。X 收的报酬是一把小米。协议是在"带回家的那天"签的。</p>
+<p><b>可疑：</b>日记和十八岁的帖子，都在说"永远不长大"——像是在把你往"十岁的你"那边引。</p>
+<p><b>未知：</b>协议原件在哪里？X 为什么一直不露面？</p>
+<p class="doc-footnote">下一站：历史博物馆。X 说，你的过去收在他那里。</p>` },
     { type: "codeGive", text: "告诉助手，你生活的城市：", code: "ch1_toAssistant" }
   ],
   assistant: [
@@ -250,6 +354,7 @@ const CHAPTERS = [
     { type: "postcard", no: 3, place: "1601 N. CLARK · 14:00", text: "博物馆里，收着这座城市的过去。<br><br>你的过去，收在我这里。<br><br>进去吧。<br>出来以后，往后面走。", sign: "— X" },
     { type: "geo", place: "tomb", text: "去芝加哥历史博物馆。" },
     { type: "whisper", text: "展柜的玻璃上，<br>映出你的影子。<br><br>还有两个小小的影子，<br>停在你肩膀上。" },
+    { type: "clue", id: "c6" },
     { type: "gate", text: "X 在展签背面写了一道题：<br><br><i>\"你第一次和朋友出去旅行，去的是哪座城市？\"</i>", accept: ["洛阳", "LUOYANG"],
       success: "洛阳。<br>他连这个都知道。" },
     { type: "fragment", ids: [5, 6] },
@@ -266,8 +371,11 @@ const CHAPTERS = [
       success: "COUCH。<br><br>石门锈死了，铁栏冰凉。<br>门缝里夹着一张泛黄的纸。<br>四周的草都是湿的，<br>只有那张纸，是干的。" },
     { type: "award", flag: "exD" },
     { type: "bag", items: ["exD"], text: "签名旁边，有两个小小的印子，像叉子。<br><br>最后一行，小得几乎看不见。<br><b>X 从来没有提过它。</b>" },
+    { type: "clue", id: "c7" },
+    { type: "whisper", text: "疑点二，解开了。<br><br>协议原件就在你手里。<br>它比你想象的旧，也比你想象的软——<br>像是被谁，一遍一遍地用嘴叼着，<br>藏到了这里。" },
     { type: "fragment", ids: [7, 8, 9] },
     { type: "whisper", text: "墓碑后面，站着一个人。<br><br>是证人 <b>W</b>。<br>TA 说，TA 知道你每年生日都在做一件奇怪的事。<br><br>可 TA 只肯回答三个字：<br><b>是。不是。不重要。</b>" },
+    { type: "clue", id: "r4" },
     { type: "document", docTitle: "海龟汤 · 汤面", html: `
 <h3>汤面</h3>
 <p class="soup">有一年的 11 月 24 日，她吹了两次生日蜡烛。<br><br>第一次吹的时候，她身边的朋友，全都还在睡觉。<br>第二次吹的时候，给她唱生日歌的家人那边，24 号早就过完了。<br><br>两次，都是在她生日当天。<br>没有人说谎。</p>
@@ -281,10 +389,16 @@ const CHAPTERS = [
       bank: ["芝加哥", "悉尼", "北京", "上海", "14", "2", "清晨", "深夜", "25 号", "23 号"],
       perCorrect: 0.6 },
     { type: "award", flag: "depo" },
-    { type: "bag", items: ["depo"], text: "汤底，封存。<br>W 临走前说：<i>\"走得再远，她也没忘了家。\"</i>" },
+    { type: "bag", items: ["depo"], text: "汤底，封存。<br>疑点三，解开了：走得再远，她也没忘了家。<br><br>W 转身要走，又停下来，背对着你说了最后一句话。" },
+    { type: "clue", id: "c8" },
     { type: "fragment", ids: [10, 11] },
     { type: "photo", key: "ch2", prompt: "在那扇门前，留一张照片。<br><small>拍完，放大看看。</small>" },
-    { type: "whisper", text: "天色暗下来了。<br><br>公园里，有什么东西在树上叫了两声。" }
+    { type: "whisper", text: "天色暗下来了。<br><br>公园里，有什么东西在树上叫了两声。" },
+    { type: "document", docTitle: "调查笔记 · 第二章", cls: "notes", html: `
+<p><b>已解开：</b>疑点二（协议原件，在 Couch 墓的门缝里）；疑点三（她没有忘了家——每年两次蜡烛）。</p>
+<p><b>新线索：</b>玻璃上的两个小影子；协议上叉子形的脚印；W 说 X "从来没离开过北京"，还用了"它们"。</p>
+<p><b>排除：</b>如果 X 从没离开过北京，那今天一直在芝加哥的人……</p>
+<p class="doc-footnote">剩下的疑点：X 到底是谁？它为什么偏偏挑今天？</p>` }
   ],
   assistant: [
     { type: "geo", place: "tomb", text: "跟她一起，去历史博物馆。" },
@@ -327,8 +441,16 @@ const CHAPTERS = [
         { label: "接受", flag: "settled", feedback: "唱针抬起来了。<br><br>可店里的音乐没有停。<br>同一首歌，同一句，一遍，又一遍。<br><br><i>X 还不想结束。</i>" },
         { label: "拒绝", flag: "rejected", score: 0.5, feedback: "你把唱片放回架子。<br><br>架子后面，有什么东西轻轻啄了一下你的手指。" }
       ] },
+    { type: "whisper", text: "你低头。<br><br>指尖上，被啄过的地方有一点红。<br>地上，躺着一根小小的羽毛。<br><br>是黄色的。" },
+    { type: "clue", id: "c9" },
     { type: "fragment", ids: [12, 13, 14] },
     { type: "photo", key: "ch3", prompt: "挑一张唱片，拍下它的 B 面。" },
+    { type: "document", docTitle: "调查笔记 · 第三章", cls: "notes", html: `
+<p>你把两根羽毛并排放在桌上：一根蓝白，一根黄。</p>
+<p>小米。脚印。翅膀的声音。红色的远房亲戚。两个影子。从没离开过北京。</p>
+<p>X 提出的条件，也很奇怪：它不要钱，不要道歉，只要你<b>每年生日，做一件从没做过的事</b>。</p>
+<p>一个真正想报复你的人，不会提这种条件。</p>
+<p class="doc-footnote">今晚开庭。X 会亲自上证人席。</p>` },
     { type: "codeGive", text: "去吃晚饭吧。把那首歌的名字告诉助手：", code: "ch3_toAssistant" }
   ],
   assistant: [
@@ -373,6 +495,7 @@ const CHAPTERS = [
         { label: "\"X，你出来。\"", score: 0, feedback: "灯闪了一下。<br>没有人出来。<br>只有一根羽毛，慢慢飘过证人席。" },
         { label: "\"我什么都不记得了。\"", score: -0.5, feedback: "法官看着你：<br><i>\"那你更该害怕。\"</i>" }
       ] },
+    { type: "clue", id: "c11" },
     { type: "objection",
       prompt: "X 走上证人席。<br>他戴着一张白狐面具，<br>声音很轻，很尖。<br><br>听到不对的话，喊<b>异议</b>。",
       grounds: ["他在引导", "道听途说", "他在揣测", "与本案无关"],
@@ -384,6 +507,7 @@ const CHAPTERS = [
         { speaker: "X", text: "我猜，她现在一点也不想我。", ground: 2, why: "他不可能知道她在想什么。" },
         { speaker: "X 的律师", text: "你狼人杀最喜欢拿什么牌？", ground: 3, why: "这与本案毫无关系。" }
       ] },
+    { type: "clue", id: "c10" },
     { type: "present", prompt: "X：<b>\"协议上，没有任何例外。\"</b><br><br>出示一件证物：",
       correct: "exD", score: 2,
       success: "你把那张纸推到他面前，指尖停在最后一行：<br><b>\"除非我变成一个很酷的大人。\"</b><br><br>白狐面具后面，只剩下很轻的呼吸声。",
@@ -443,11 +567,18 @@ const CHAPTERS = [
     { type: "postcard", no: 7, place: "2040 N. MILWAUKEE · 21:00", text: "今晚九点，<br>你会坐上另一张陪审席。<br><br>散场之后，<br>我会摘下面具。", sign: "— X" },
     { type: "geo", place: "lodge", text: "去 Lincoln Lodge。" },
     { type: "whisper", text: "散场了。<br>门外的街灯，一盏一盏地熄灭。<br><br>X 站在最后一盏下面。<br>白狐面具，在黑暗里微微发亮。" },
+    { type: "deduce" },
     { type: "narration", title: "面具之下", text: "X 抬起手，慢慢摘下面具。<br><br>面具下面，不是一个人。<br><br>是两只小鸟。<br>一只蓝白色，一只黄色。<br><br><b>{plaintiff}</b>。" },
     { type: "feathers", text: "{plaintiffMessage}" },
     { type: "postcard", no: 20, place: "THE LAST LETTER", text: "我们一共写了二十封信。<br>你只收到了七封。<br><br>剩下的十三封，<br>是你和朋友们一起过的日子。<br><br>我们替你收着。", sign: "— 蛋清 & 蛋黄" },
     { type: "fragment", ids: [18, 19, 20] },
     { type: "twenty" },
+    { type: "cloze", title: "还原真相", prompt: "最后一个疑点：它们为什么偏偏挑今天？<br>把这个案子，从头还原一遍。<br><small>先点一个空格，再点下面的词。</small>",
+      text: "X 是 {{0}}。它们住在 {{1}}，每天早上等她说早安。<br>它们告她，不是想让她 {{2}}，<br>只是想确认：长大以后的她，还会不会 {{3}}。<br>所以协议里，藏着一条出路：除非她变成一个很酷的 {{4}}。<br>今天走过的每一站，对她来说都是 {{5}}。<br>因为三年来，是她一直拉着别人 {{6}}——<br>今天，有人把这件事，原样还给了她。",
+      answers: ["蛋清和蛋黄", "北京", "认输", "快乐", "大人", "第一次", "去尝试新鲜的东西"],
+      bank: ["蛋清和蛋黄", "十岁的她", "北京", "芝加哥", "认输", "快乐", "小孩", "大人", "第一次", "最后一次", "去尝试新鲜的东西", "永远不长大"],
+      perCorrect: 0.5,
+      okText: "全部还原。<br><br>疑点四，解开了。<br>案子，到这里，才算真正结束。" },
     { type: "gate", any: true, key: "comicVerdict", text: "最后一件事。<br><br>写下今晚的演出里，<br>你们审判的那个人：", success: "已记入卷宗。" },
     { type: "signature", who: "counsel", label: "Aileen，请签名" },
     { type: "signature", who: "assistant", label: "把手机交给助手，请 TA 签名" },

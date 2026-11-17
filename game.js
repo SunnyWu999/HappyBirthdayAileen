@@ -52,7 +52,7 @@
   let role = params.get("role") || localStorage.getItem("cf20_role");
   if (role && !["counsel", "assistant"].includes(role)) role = null;
 
-  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, frags: [], done: false, ledger: {}, flagLedger: {}, passed: {} });
+  const freshState = () => ({ ch: 0, step: 0, score: 0, flags: {}, photos: {}, sigs: {}, bucket: null, verdict: null, paced: {}, frags: [], clues: [], done: false, ledger: {}, flagLedger: {}, passed: {} });
   let S = null;
 
   function load() {
@@ -186,6 +186,7 @@
     const header = el("header", { class: "topbar" },
       el("div", { class: "caseno" }, el("span", { class: "quill", html: QUILL }), "No. " + CONFIG.caseNo),
       el("div", { class: "role-badge " + role }, role === "counsel" ? "⚖️ " + CONFIG.herName : "📎 " + CONFIG.assistantName),
+      role === "counsel" ? el("button", { class: "frag-count clue-count", title: "线索", onclick: openClues }, "🔍 " + (S.clues || []).length) : null,
       role === "counsel" ? el("button", { class: "frag-count", title: "记忆碎片", onclick: openFragments }, "✧ " + (S.frags || []).length + "/20") : null,
       role === "counsel" ? el("button", { class: "icon-btn", title: "证物", onclick: openExhibits }, "📁") : null
     );
@@ -336,6 +337,23 @@
     main.append(STEPS.dossier({}, null, true));
     main.append(STEPS.letter({}, null, true));
     main.append(STEPS.gifts({}, null, true));
+  }
+
+  function clueCard(id, small) {
+    const c = CLUES[id]; if (!c) return null;
+    return el("div", { class: "clue-card" + (small ? " small" : "") },
+      el("div", { class: "clue-tag" }, "CLUE · " + id.toUpperCase()),
+      el("div", { class: "clue-title" }, t(c.title)),
+      el("div", { class: "clue-text", html: t(c.text) }));
+  }
+  function openClues() {
+    const ids = S.clues || [];
+    const box = el("div", { class: "modal", onclick: (e) => { if (e.target === box) box.remove(); } },
+      el("div", { class: "modal-inner letterpaper" },
+        el("h3", {}, "🔍 线索 · " + ids.length),
+        ids.length ? el("div", { class: "clue-list" }, ids.map((id) => clueCard(id, true))) : el("p", {}, "还没有线索。"),
+        btn("关闭", () => box.remove(), "secondary")));
+    document.body.append(box);
   }
 
   function openFragments() {
@@ -986,6 +1004,59 @@
       btn("继续", done));
   };
 
+  // ---- 线索卡 ----
+  STEPS.clue = (s, done) => {
+    if (!S.clues.includes(s.id)) { S.clues.push(s.id); save(); }
+    const cc = document.querySelector(".clue-count"); if (cc) cc.textContent = "🔍 " + S.clues.length;
+    return el("div", { class: "clue-step" },
+      el("div", { class: "frag-head" }, "新线索"),
+      clueCard(s.id),
+      el("div", { class: "muted center" }, "已记入卷宗 · 右上角 🔍 可随时翻看"),
+      btn("记下了", done));
+  };
+
+  // ---- 指认 X ----
+  STEPS.deduce = (s, done) => {
+    let picked = null, tries = 0;
+    const c = card("deduce", el("h2", {}, "指认"),
+      el("div", { class: "prompt", html: "在 X 摘下面具之前，<br>说出它的名字。<br><small>先选嫌疑人，再从你的线索里挑出 <b>三条</b> 证据。</small>" }));
+    const sus = el("div", { class: "options" });
+    const susBtns = SUSPECTS.map((p) => {
+      const b = el("button", { class: "opt", onclick: () => { picked = p; susBtns.forEach((x) => x.classList.toggle("on", x === b)); } },
+        el("b", {}, p.name), el("div", { class: "muted" }, p.note));
+      sus.append(b); return b;
+    });
+    const chosen = new Set();
+    const cl = el("div", { class: "clue-pick" });
+    (S.clues || []).forEach((id) => {
+      const b = el("button", { class: "check", onclick: () => {
+        if (chosen.has(id)) { chosen.delete(id); b.classList.remove("on"); }
+        else { if (chosen.size >= 3) return toast("只能挑三条"); chosen.add(id); b.classList.add("on"); }
+      } }, t(CLUES[id].title));
+      cl.append(b);
+    });
+    const fb = el("div", {});
+    const go = btn("指认", () => {
+      if (!picked) return toast("先选一个嫌疑人");
+      if (chosen.size < Math.min(3, (S.clues || []).length)) return toast("挑三条线索作为证据");
+      fb.innerHTML = "";
+      if (picked.id !== "birds") {
+        tries++; if (tries === 1) addScore(-0.5); save();
+        fb.append(el("div", { class: "feedback bad", html: "X 轻轻摇了摇头。<br><br>" + t(picked.elim) }), el("div", { class: "muted" }, "再想想。"));
+        return;
+      }
+      const good = [...chosen].filter((id) => CLUES[id].to === "birds").length;
+      addScore(2 + good * 0.5); save();
+      [...sus.children, ...cl.children].forEach((x) => (x.disabled = true));
+      go.remove();
+      fb.append(el("div", { class: "feedback", html: "白狐面具上，裂开了一道细细的缝。<br><br>" +
+        (good === 3 ? "三条证据，全部指向同一个答案。" : good + " 条证据站得住。剩下的，不太像。") +
+        "<br><br><i>小米。脚印。翅膀。两个影子。一蓝一黄。从来没离开过北京。</i>" }), btn("看它摘下面具", done));
+    }, "danger");
+    c.append(el("h3", {}, "嫌疑人"), sus, el("h3", {}, "你的证据（选三条）"), cl, go, fb);
+    return c;
+  };
+
   // ---- 记忆碎片 ----
   const fragText = (i) => { const f = FRAGMENTS[i - 1]; return typeof f === "string" ? f : f.text; };
   const fragImg = (i) => { const f = FRAGMENTS[i - 1]; return typeof f === "string" ? "" : (f.img || ""); };
@@ -1020,7 +1091,7 @@
   STEPS.cloze = (s, done) => {
     const fill = new Array(s.answers.length).fill(null);
     let active = 0;
-    const c = card("cloze", el("div", { class: "prompt", html: t(s.prompt) }));
+    const c = card("cloze", s.title ? el("h2", {}, t(s.title)) : null, el("div", { class: "prompt", html: t(s.prompt) }));
     const textBox = el("div", { class: "cloze-text" });
     const bank = el("div", { class: "cloze-bank" });
     const blanks = [];
@@ -1052,7 +1123,7 @@
       fill.forEach((f, i) => { const ok = f === s.answers[i]; if (ok) right++; blanks[i].classList.add(ok ? "ok" : "bad"); blanks[i].disabled = true; if (!ok) blanks[i].textContent = f + " → " + s.answers[i]; });
       addScore(right * (s.perCorrect || 0.5)); save();
       bank.remove(); submit.remove();
-      c.append(el("div", { class: "feedback", html: right === s.answers.length ? "全部还原。<br>汤底，和你写的一字不差。" : "还原了 " + right + " / " + s.answers.length + "。<br>红色的地方，是那晚真正发生的事。" }), btn("继续", done));
+      c.append(el("div", { class: "feedback", html: right === s.answers.length ? (s.okText || "全部还原。<br>汤底，和你写的一字不差。") : "还原了 " + right + " / " + s.answers.length + "。<br>红色的地方，是那晚真正发生的事。" }), btn("继续", done));
     });
     c.append(textBox, bank, submit);
     return c;

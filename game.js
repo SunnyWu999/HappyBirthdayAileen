@@ -142,10 +142,47 @@
     tryOne(0);
   }
 
+  // ---- 蓝白 / 黄色羽毛（蛋清 & 蛋黄）----
+  const FEATHER_COLORS = [["#ffffff", "#7fb6e8"], ["#fff6c8", "#f0c62e"]];
+  function featherSVG(i) {
+    const [a, b] = FEATHER_COLORS[i % 2], id = "fg" + Math.random().toString(36).slice(2, 8);
+    return '<svg viewBox="0 0 40 120" width="100%" height="100%"><defs><linearGradient id="' + id + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + a + '"/><stop offset="1" stop-color="' + b + '"/></linearGradient></defs>' +
+      '<path d="M20 4C33 22 36 52 30 80c-3 14-7 24-10 30-3-6-7-16-10-30C4 52 7 22 20 4z" fill="url(#' + id + ')" opacity=".92"/>' +
+      '<path d="M20 8C21 40 21 80 20 118" stroke="' + b + '" stroke-width="1.4" fill="none" opacity=".8"/>' +
+      '<path d="M20 40l-9-7M20 55l-10-6M20 70l-9-5M20 40l9-8M20 56l10-7M20 72l9-6" stroke="rgba(255,255,255,.55)" stroke-width=".8"/></svg>';
+  }
+  function rnd(seed) { let x = seed * 9301 + 49297; return () => ((x = (x * 9301 + 49297) % 233280) / 233280); }
+  function scatterFeathers() {
+    let box = document.getElementById("feathers");
+    if (!box) { box = el("div", { id: "feathers", "aria-hidden": "true" }); document.body.prepend(box); }
+    const n = !S ? 0 : S.flags.feathers ? 14 : 4;
+    const key = (S ? S.ch : -1) + ":" + n;
+    if (box.dataset.key === key) return;
+    box.dataset.key = key; box.innerHTML = "";
+    const r = rnd(7 + (S ? S.ch : 0) * 13);
+    for (let i = 0; i < n; i++) {
+      const f = el("div", { class: "feather", html: featherSVG(i) });
+      const edge = r() < 0.5 ? r() * 14 : 86 + r() * 14;      // 多数落在两边，不挡字
+      f.style.cssText = "left:" + (r() < 0.75 ? edge : r() * 100) + "vw;top:" + (r() * 92) + "vh;--rot:" + Math.round(r() * 360) + "deg;--s:" + (0.55 + r() * 0.6) + ";animation-delay:" + (r() * -8).toFixed(1) + "s";
+      box.append(f);
+    }
+  }
+  function featherFall(count) {
+    const box = el("div", { class: "feather-fall", "aria-hidden": "true" });
+    for (let i = 0; i < count; i++) {
+      const f = el("div", { class: "feather falling", html: featherSVG(i) });
+      f.style.cssText = "left:" + (Math.random() * 100) + "vw;--rot:" + Math.round(Math.random() * 360) + "deg;--s:" + (0.5 + Math.random() * 0.7) + ";--dx:" + Math.round(Math.random() * 160 - 80) + "px;animation-duration:" + (5 + Math.random() * 5).toFixed(1) + "s;animation-delay:" + (Math.random() * 4).toFixed(1) + "s";
+      box.append(f);
+    }
+    document.body.append(box);
+    setTimeout(() => box.remove(), 15000);
+  }
+
   function shell(chapter) {
     const root = app();
     root.innerHTML = "";
     setBg(chapter);
+    scatterFeathers();
     const header = el("header", { class: "topbar" },
       el("div", { class: "caseno" }, el("span", { class: "quill", html: QUILL }), "No. " + CONFIG.caseNo),
       el("div", { class: "role-badge " + role }, role === "counsel" ? "⚖️ " + CONFIG.herName : "📎 " + CONFIG.assistantName),
@@ -886,6 +923,16 @@
     return c;
   };
 
+  // ---- 面具之下：羽毛落下 ----
+  STEPS.feathers = (s, done) => {
+    if (!S.flags.feathers) { S.flags.feathers = true; save(); }
+    featherFall(28); scatterFeathers();
+    return card("center reveal-card",
+      el("div", { class: "reveal-birds" }, el("span", { class: "rb blue", html: featherSVG(0) }), el("span", { class: "rb yellow", html: featherSVG(1) })),
+      el("div", { class: "text", html: t(s.text) }),
+      btn("继续", done));
+  };
+
   // ---- 记忆碎片 ----
   STEPS.fragment = (s, done) => {
     const fresh = s.ids.filter((i) => !S.frags.includes(i));
@@ -949,9 +996,9 @@
       el("div", { class: "doc-label" }, "第二十封信 · 二十件小事"),
       el("article", { class: "paper twenty-letter" },
         el("div", { class: "big20" }, "20"),
-        el("p", { class: "doc-zh" }, "X 收了十年的东西，一共二十片。"),
+        el("p", { class: "doc-zh" }, "蛋清和蛋黄，替你收着的二十个日子。"),
         el("ol", { class: "frag-list" }, FRAGMENTS.map((f, i) => el("li", { class: have.has(i + 1) ? "got" : "miss", style: "animation-delay:" + (i * 0.12) + "s" }, f))),
-        el("p", { class: "doc-sign" }, "— 十岁的你，和" + CONFIG.assistantName)),
+        el("p", { class: "doc-sign" }, "— 蛋清 & 蛋黄")),
       btn("继续", done));
   };
 

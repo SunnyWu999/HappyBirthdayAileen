@@ -519,3 +519,31 @@ body.has-bg #bgphoto { filter: sepia(.6) saturate(.8) brightness(.55) contrast(1
 .topbar .caseno { font-size: 12px; white-space: nowrap; }
 @media (max-width: 420px) { .topbar .caseno { font-size: 11px; letter-spacing: 0; } .role-badge { font-size: 12px; padding: 1px 8px; } }
 .gift-back small { color: rgba(240,214,140,.75); letter-spacing: .1em; }
+
+/* ---- v4：羽毛 · 卡牌 · 礼物 ---- */
+.twenty-letter .frag-list li:nth-child(n+14) { color: #24324f; }
+.twenty-letter .frag-list li:last-child { color: var(--wax); }
+.frag-list li { font-size: 17px; }
+#app { position: relative; z-index: 1; }
+#feathers { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.feather { position: absolute; width: 26px; height: 78px; transform: rotate(var(--rot)) scale(var(--s)); opacity: .5; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35)); animation: sway 9s ease-in-out infinite alternate; }
+#feathers .feather { opacity: .55; }
+@keyframes sway { from { transform: rotate(var(--rot)) scale(var(--s)) translateY(0); } to { transform: rotate(calc(var(--rot) + 14deg)) scale(var(--s)) translateY(-10px); } }
+.feather-fall { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.feather.falling { top: -100px; opacity: .95; animation: fall 7s cubic-bezier(.3,.1,.6,1) both; }
+@keyframes fall {
+  0% { transform: translate(0, 0) rotate(var(--rot)) scale(var(--s)); opacity: 0; }
+  10% { opacity: .95; }
+  50% { transform: translate(var(--dx), 55vh) rotate(calc(var(--rot) + 120deg)) scale(var(--s)); }
+  100% { transform: translate(calc(var(--dx) * -1), 112vh) rotate(calc(var(--rot) + 260deg)) scale(var(--s)); opacity: .8; }
+}
+.reveal-birds { display: flex; justify-content: center; gap: 18px; margin-bottom: 8px; }
+.reveal-birds .rb { width: 34px; height: 100px; display: inline-block; animation: sway 4s ease-in-out infinite alternate; --s: 1; }
+.reveal-birds .rb.blue { --rot: -18deg; } .reveal-birds .rb.yellow { --rot: 18deg; }
+.reveal-card .text { font-family: var(--brush); font-size: 21px; line-height: 1.9; color: #24324f; }
+.feet { font-family: var(--fell); letter-spacing: .5em; color: #6b4a2a; font-size: 22px; }
+.ev-gift { padding: 22px 10px; text-align: center; font-size: 34px; line-height: 1.4; color: #6b3a1a; }
+.ev-gift b { font-family: var(--brush); font-weight: 400; font-size: 22px; display: block; }
+.ev-gift small { font-size: 13px; }
+.ev-gift.green { color: #2f5a3a; }
+.bag-img[src$=".webp"] { object-fit: contain; background: transparent; }

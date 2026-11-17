@@ -564,3 +564,44 @@ body.has-bg #bgphoto { filter: sepia(.6) saturate(.8) brightness(.55) contrast(1
 .faded-photo.zoom { padding-bottom: 34px; }
 .frag-list li .faded-photo { transform: rotate(-1.5deg); }
 .frag-list li:nth-child(2n) .faded-photo { transform: rotate(1.8deg); }
+
+/* ---- 真实感传票（复印件）---- */
+.paper.summons {
+  clip-path: none; padding: 26px 22px 22px; color: #141414;
+  font-family: "Special Elite", "Courier New", "Noto Serif SC", monospace; font-size: 13px; line-height: 1.55;
+  background: var(--grain), radial-gradient(ellipse at 50% 40%, #fbfaf6, #ecebe4 85%, #d9d7cc);
+  background-size: 160px 160px, auto;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.12), 0 18px 36px rgba(0,0,0,.55);
+  transform: rotate(-.6deg);
+}
+.paper.summons::after { background: linear-gradient(90deg, rgba(0,0,0,.05), transparent 6%, transparent 94%, rgba(0,0,0,.06)), repeating-linear-gradient(180deg, transparent 0 3px, rgba(0,0,0,.012) 3px 4px); }
+.sm-title { font-family: "Times New Roman", "Noto Serif SC", serif; font-weight: 900; font-size: 40px; letter-spacing: .04em; text-align: center; margin: 0 0 14px; color: #0d0d0d; }
+.sm-party { display: flex; justify-content: space-between; align-items: flex-start; margin: 10px 0 12px 18%; font-weight: 700; text-transform: uppercase; }
+.sm-party.plaintiff { text-transform: none; font-weight: 400; margin-left: 14%; }
+.sm-role { font-weight: 700; text-transform: uppercase; }
+.redact { background: #0d0d0d; color: transparent; letter-spacing: -2px; display: inline-block; line-height: 1.1; margin: 2px 0; }
+.redact.short { width: 4.5em; overflow: hidden; }
+.sm-caps { font-weight: 700; text-transform: uppercase; margin: 10px 0; }
+.sm-body { text-align: justify; margin: 10px 0; }
+.sm-list { margin: 6px 0 10px; padding-left: 2.4em; }
+.sm-list li { margin: 6px 0; }
+.sm-foot { display: flex; justify-content: space-between; align-items: flex-end; gap: 10px; margin-top: 14px; }
+.sm-sign { font-size: 12px; }
+.sm-stamp { border: 2px solid rgba(40,40,70,.7); color: rgba(40,40,70,.8); padding: 6px 8px; font-size: 9.5px; line-height: 1.4; text-align: center; transform: rotate(-9deg); text-transform: uppercase; letter-spacing: .04em; }
+.sm-stamp b { font-size: 15px; display: block; letter-spacing: .1em; }
+.sm-scrawl { font-family: var(--script); font-size: 18px; color: #1b2a4a; text-transform: none; display: block; transform: rotate(6deg); }
+.sm-zh { margin-top: 14px; padding-top: 8px; border-top: 1px dashed rgba(0,0,0,.3); font-family: var(--serif); font-size: 13px; color: #444; }
+.paper.summons .twenty { font-family: inherit; font-size: 1em; color: inherit; }
+
+/* ---- 结案附言 ---- */
+.epilogue p { font-family: var(--brush); font-size: 19px; line-height: 1.95; color: #24324f; text-indent: 2em; margin: 0 0 12px; }
+.epilogue p.doc-sign { text-indent: 0; }
+
+/* ---- 终点 ---- */
+.surprise-card { padding-top: 34px; }
+.surprise-text { font-family: var(--brush); font-size: 40px; line-height: 1.5; color: var(--wax); margin: 10px 0 6px; animation: glowIn 2.4s ease both; }
+@keyframes glowIn { from { opacity: 0; letter-spacing: .4em; filter: blur(6px); } to { opacity: 1; letter-spacing: .05em; filter: none; } }
+.surprise-notes { font-size: 22px; color: #c9a24a; opacity: 0; letter-spacing: .4em; }
+.surprise-notes.on { animation: notes 2.2s ease-in-out infinite; opacity: 1; }
+@keyframes notes { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.surprise-card .gift-grid { margin-top: 10px; }

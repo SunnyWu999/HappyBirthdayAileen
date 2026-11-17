@@ -27,7 +27,7 @@ const CONFIG = {
 二十岁快乐。
 
 {assistant}`,
-  giftHint: "还有四件证物，不在卷宗里。<br>它们在你的助手那里。",
+  giftHint: "四件证物，不在卷宗里。",
 
   /* ---- 定位 ---- 到了才能继续（两部手机都要）。测试时可改成 false */
   useGeo: true,
@@ -35,7 +35,8 @@ const CONFIG = {
     plaza:  { name: "联邦广场 · 火烈鸟",      lat: 41.8788, lng: -87.6297, radius: 250 },
     tomb:   { name: "历史博物馆后 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
     vinyl:  { name: "Reckless Records",        lat: 41.9075, lng: -87.6735, radius: 500 },
-    lodge:  { name: "Lincoln Lodge",           lat: 41.9182, lng: -87.6902, radius: 300 }
+    lodge:  { name: "Lincoln Lodge",           lat: 41.9182, lng: -87.6902, radius: 300 },
+    home:   { name: "1414 E. 59th St.",        lat: 41.7877, lng: -87.5911, radius: 200 }
   },
 
   /* ---- 暗号（数组 = 几种写法都算对；口头报的时候说第一个）---- */
@@ -133,22 +134,39 @@ const CHAPTERS = [
 <tr><td>姓名</td><td><b>关傲予</b>（Aileen）</td></tr>
 <tr><td>出生</td><td>2006 年 11 月 24 日 · 澳大利亚</td></tr>
 <tr><td>生活的城市</td><td>北京</td></tr>
-<tr><td>已知嗜好</td><td>吉他 · 音乐 · 二次元 · 狼人杀</td></tr>
+<tr><td>地址</td><td>1414 E. 59th St.,<br>Chicago, IL, 60637</td></tr>
 <tr><td>今日年龄</td><td><b class="twenty">20</b></td></tr>
 </table>
 <p class="doc-footnote">本案纯属虚构。</p>` },
     { type: "gate", text: "X 要先确认，你是不是本人。<br><br>你出生在哪个国家？", accept: ["澳大利亚", "澳洲", "AUSTRALIA"],
       success: "身份确认。<br>信封里滑出一张对折的纸。" },
     { type: "fragment", ids: [1] },
-    { type: "document", docTitle: "传票", html: `
-<p class="doc-court">{court}</p>
-<p class="doc-caption"><b>{X}</b>　v.　<b>Aileen</b></p>
-<h3>案由：长大</h3>
-<p>很多年前，被告把原告带回了家。那天她对原告说：</p>
-<p class="doc-zh"><b>"我保证永远不长大，每天都陪你玩。"</b></p>
-<p>原告收下了一把小米，作为信物。</p>
-<p>今日，被告年满<b class="twenty">二十</b>，人在芝加哥。</p>
-<p class="doc-sign">今夜十二点之前，给我一个交代。<br>— {X}</p>` },
+    { type: "document", docTitle: "传票", cls: "summons", html: `
+<h1 class="sm-title">SUMMONS</h1>
+<div class="sm-party">
+  <div class="sm-addr">MS. AILEEN GUAN<br><span class="redact">██████████████</span><br>1414 E. 59th St.<br>Chicago, IL 60637<br><span class="redact short">████████</span></div>
+  <div class="sm-role">DEFENDANT</div>
+</div>
+<p class="sm-caps">YOU ARE REQUIRED TO APPEAR IN THE CIRCUIT COURT OF TIME, FEDERAL PLAZA, 219 S. DEARBORN STREET, CHICAGO, ON TUESDAY THE 24<sup>TH</sup> DAY OF NOVEMBER 2026 AT 10.00 O'CLOCK IN THE MORNING TO DEFEND THE ACTION OF WHICH PARTICULARS APPEAR BELOW.</p>
+<p class="sm-caps">IF YOU DO NOT APPEAR JUDGMENT MAY BE GIVEN IN YOUR ABSENCE.</p>
+<div class="sm-party plaintiff">
+  <div class="sm-addr">MR. X, exercising the profession of<br>being very small and waiting,<br>under the name and style of<br>"X"</div>
+  <div class="sm-role">PLAINTIFF</div>
+</div>
+<p class="sm-body">ACTIONING the Defendant for breach of the <b>"FOREVER NOT GROWING UP AGREEMENT"</b>, entered into on the day the Defendant brought the Plaintiff home, in consideration of ONE (1) HANDFUL OF MILLET, whereby the Defendant promised never to grow up and to play with the Plaintiff every day; the Defendant having attained the age of <b class="twenty">TWENTY (20)</b> years on the 24<sup>th</sup> day of November 2026 and being now resident in Chicago, the whole as appears by the Agreement in the Plaintiff's favour.</p>
+<p class="sm-caps">YOU WILL STOP THIS GOING TO COURT IF, BEFORE MIDNIGHT ON THE DATE GIVEN ABOVE, YOU PAY THE SUM OF:-</p>
+<ol class="sm-list" type="a">
+<li>one (1) honest laugh;</li>
+<li>one (1) thing you have never done before;</li>
+<li>twenty (20) minutes of being completely, ridiculously happy; and</li>
+<li>stamp duty in the sum of one (1) photograph.</li>
+</ol>
+<div class="sm-foot">
+  <div class="sm-sign"><span class="redact">████████████</span><br><b>PLAINTIFF</b><br>MR. X<br><br>Dated the 24<sup>th</sup> day of November 2026.</div>
+  <div class="sm-stamp">CIRCUIT COURT OF TIME<br>THIS SUMMONS WAS POSTED ON<br><b>24 NOV 2026</b><br><span class="sm-scrawl">𝒳 ~~~</span><br>GREFFIER</div>
+</div>
+<p class="sm-zh">【译】X 告你：你答应过永远不长大，可你今天二十岁了。<br>今天上午十点，到联邦广场出庭。不来，就缺席判决。</p>` },
+
     { type: "choice", prompt: "没有人会替你出庭。",
       options: [
         { label: "那就我自己来。", feedback: "很好。<br>从这一刻起，你是被告，也是自己的律师。" },
@@ -434,13 +452,28 @@ const CHAPTERS = [
     { type: "signature", who: "counsel", label: "Aileen，请签名" },
     { type: "signature", who: "assistant", label: "把手机交给助手，请 TA 签名" },
     { type: "judgment" },
-    { type: "gifts" },
     { type: "dossier" },
-    { type: "letter" }
+    { type: "letter" },
+    { type: "document", docTitle: "结案附言 · 法官写在卷宗最后一页", html: `
+<div class="epilogue">
+<p>本庭审过很多案子。这一件，原告是两只鸟，被告是一个刚满二十岁的人，呈上来的证据，是一串日期。</p>
+<p>宣判以后，本庭把卷宗从头翻了一遍，才弄明白：这个案子，从一开始就不是要定谁的罪。</p>
+<p>三年前的一个晚上，有个人在一张很长的餐桌边认识了你。那时候的她，还不太敢做新的事——没进过 livehouse，没上过台，没跟朋友出过远门。是你拉着她去的。你陪她一言不合地跟踪别人，陪她站在鼓声最响的地方，陪她走上 Keystone Idol 的舞台，划掉了清单上的第一件事。后来是洛阳的夜，西藏的车站，毕业那天的长袍，夏威夷的沙滩。她一直走在你旁边，学着把日子过得热闹一点。</p>
+<p>你说过，你本来是一个音符。可你大概不知道，对别人来说，你也是那个让旋律响起来的人。</p>
+<p>所以今天，她想把这件事还给你。</p>
+<p>今天的一切，都是第一次：第一次坐进真正的联邦法庭旁听，第一次在一座一百五十年的老墓前找线索，第一次在唱片店翻一张不认识的 B 面，第一次坐上陪审席，审判一个喜剧演员。她把你教给她的事——去试试，去感受——原样做成了一整天，送回给你。</p>
+<p>这就是这份礼物的意思：你总是让别人不再孤独。今天，轮到你被别人认真地惦记一次。</p>
+<p>协议作废了。但判决书上附带的那一条，本庭希望你一直遵守：二十岁以后，也要好奇，也要快乐。</p>
+<p class="doc-sign">现在，回家吧。<br>最后一件证物，在 1414 E. 59th St. 等你。</p>
+</div>` },
+    { type: "geo", place: "home", text: "最后一站。<br>回家。<br><br><small>1414 E. 59th St., Chicago, IL 60637</small>" },
+    { type: "surprise", text: "抬头。<br><br>吴妍曦有礼物给你。" }
   ],
   assistant: [
     { type: "geo", place: "lodge", text: "跟她一起，去 Lincoln Lodge。" },
-    { type: "narration", title: "最后", text: "散场后，她会看到 X 摘下面具——是蛋清和蛋黄。<br>她会收齐二十片记忆，写下今晚演出里审判的那个人，再把手机交给你签名。<br><br>然后，四件礼物，该登场了：<br>人物肖像衣服 · 黄金蛋糕 · 手写书 · 吉他支架。" }
+    { type: "narration", title: "最后", text: "散场后，她会看到 X 摘下面具——是蛋清和蛋黄。<br>她会收齐二十片记忆，写下今晚演出里审判的那个人，再把手机交给你签名。<br>然后她会读到结案附言，被带回 1414 E. 59th St.。" },
+    { type: "geo", place: "home", text: "一起回 1414 E. 59th St.<br><small>到了以后，她的手机会写：\"抬头，吴妍曦有礼物给你\"，并开始放生日快乐歌。</small>" },
+    { type: "narration", title: "🎁 现在", text: "站在她面前。<br>等她抬头。<br><br>人物肖像衣服 · 黄金蛋糕 · 手写书 · 吉他支架。" }
   ]
 }
 ];

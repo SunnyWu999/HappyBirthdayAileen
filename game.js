@@ -464,7 +464,7 @@
 
   STEPS.document = (s, done) => el("div", {},
     el("div", { class: "doc-label" }, t(s.docTitle)),
-    el("article", { class: "paper", html: t(s.html) }),
+    el("article", { class: "paper" + (s.cls ? " " + s.cls : ""), html: t(s.html) }),
     btn("继续", done));
 
   STEPS.award = (s, done) => { setFlag(s.flag); setTimeout(done, 0); return null; };
@@ -923,6 +923,59 @@
     return c;
   };
 
+  // ---- 生日快乐歌（音乐盒，WebAudio 现场合成）----
+  let AC = null;
+  function audio() {
+    if (!AC) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; AC = new C(); }
+    if (AC.state === "suspended") AC.resume();
+    return AC;
+  }
+  // 手机浏览器要求先有一次触摸才能出声：第一次点屏幕时悄悄解锁
+  const unlock = () => { const a = audio(); if (a) { const b = a.createBuffer(1, 1, 22050), src = a.createBufferSource(); src.buffer = b; src.connect(a.destination); src.start(0); } document.removeEventListener("touchend", unlock); document.removeEventListener("click", unlock); };
+  document.addEventListener("touchend", unlock); document.addEventListener("click", unlock);
+  function playBirthday() {
+    const a = audio(); if (!a) return 0;
+    const N = { C4: 261.63, F4: 349.23, G4: 392, A4: 440, Bb4: 466.16, C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99 };
+    const mel = [
+      ["G4",.75],["G4",.25],["A4",1],["G4",1],["C5",1],["B4",2],
+      ["G4",.75],["G4",.25],["A4",1],["G4",1],["D5",1],["C5",2],
+      ["G4",.75],["G4",.25],["G5",1],["E5",1],["C5",1],["B4",1],["A4",2],
+      ["F5",.75],["F5",.25],["E5",1],["C5",1],["D5",1],["C5",3]];
+    N.B4 = 493.88;
+    const beat = 0.48, out = a.createGain(); out.gain.value = 0.32; out.connect(a.destination);
+    let tm = a.currentTime + 0.15;
+    const ping = (f, at, len, vol) => {
+      [[1, "sine", 1], [2, "triangle", 0.25], [3, "sine", 0.08]].forEach(([m, type, v]) => {
+        const o = a.createOscillator(), g = a.createGain();
+        o.type = type; o.frequency.value = f * m;
+        g.gain.setValueAtTime(0.0001, at); g.gain.exponentialRampToValueAtTime(vol * v, at + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, at + Math.max(0.6, len * 1.6));
+        o.connect(g); g.connect(out); o.start(at); o.stop(at + Math.max(0.7, len * 1.7));
+      });
+    };
+    const bass = { 0: "F4", 6: "C4", 12: "F4", 19: "C4" };
+    mel.forEach(([n, d], i) => {
+      ping(N[n], tm, d * beat, 0.9);
+      if (bass[i]) ping(N[bass[i]] / 2, tm, 3 * beat, 0.35);
+      tm += d * beat;
+    });
+    return (tm - a.currentTime) * 1000;
+  }
+
+  // ---- 终点：抬头 ----
+  STEPS.surprise = (s, done) => {
+    const c = card("center surprise-card");
+    const big = el("div", { class: "surprise-text", html: t(s.text) });
+    const note = el("div", { class: "surprise-notes", "aria-hidden": "true" }, "♪ ♫ ♪ ♫ ♪");
+    const replay = btn("🎂 再放一遍生日歌", () => { playBirthday(); note.classList.add("on"); }, "secondary");
+    c.append(el("div", { class: "stamp" }, "THE END"), big, note);
+    const list = typeof GIFTS !== "undefined" ? GIFTS : [];
+    if (list.length) c.append(el("div", { class: "muted" }, t(CONFIG.giftHint || "")), STEPS.gifts({ bare: true }, null, true));
+    c.append(replay, btn("完成", done));
+    setTimeout(() => { featherFall(36); if (playBirthday()) note.classList.add("on"); }, 400);
+    return c;
+  };
+
   // ---- 面具之下：羽毛落下 ----
   STEPS.feathers = (s, done) => {
     if (!S.flags.feathers) { S.flags.feathers = true; save(); }
@@ -1033,8 +1086,9 @@
         el("div", { class: "gift-front" }, el("b", {}, g.name), el("i", {}, g.note)));
       return cardEl;
     }));
+    if (s.bare) return grid;
     return el("div", {},
-      el("div", { class: "doc-label" }, "七件不在卷宗里的证物"),
+      el("div", { class: "doc-label" }, "不在卷宗里的证物"),
       card("center letterpaper", el("p", { html: t(CONFIG.giftHint || "") }), grid, el("div", { class: "muted" }, "一张一张，揭开它们的封条。")),
       go);
   };

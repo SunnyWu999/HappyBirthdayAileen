@@ -28,6 +28,7 @@ const CONFIG = {
 
 {assistant}`,
   giftHint: "四件证物，不在卷宗里。",
+  passphrase: ["我一直在窗边等你"],   // 门口那封信上的镜像口令（被告第一次打开网页时要输入）
 
   /* ---- 定位 ---- 到了才能继续（两部手机都要）。测试时可改成 false */
   useGeo: true,
@@ -278,11 +279,12 @@ const CHAPTERS = [
 <li>暗号用嘴说，别把屏幕给她看。</li>
 <li>每一章都要两个人<b>到了地方</b>，手机定位通过，才能翻开。</li>
 <li>定位失败时，备用暗号是 <b>${CONFIG.codes.geoOverride}</b>。</li>
+<li>她第一次打开网页要输入信上的镜像口令：<b>我一直在窗边等你</b>。</li>
 <li>一路上，她会收集 <b>20</b> 片记忆——你们一起过的日子。</li>
 <li>🤫 X 的真身是<b>蛋清和蛋黄</b>，终章才揭晓。别说漏。</li>
 </ol>
 <h3>路线</h3>
-<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:30）→ 晚餐（19:00）→ Lincoln Lodge（21:00）→ 回家</p>` },
+<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:30）→ 晚餐 · Akahoshi Ramen（17:30）→ Lincoln Lodge（21:00）→ 回家</p>` },
     { type: "codeGive", text: "把她出生的<b>年份</b>报给她：", code: "ch0_toCounsel" }
   ]
 },
@@ -470,10 +472,10 @@ const CHAPTERS = [
 
 /* =================== 第四章 · 晚餐 · 开庭 =================== */
 {
-  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "晚餐", pace: "ch4",
+  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "Akahoshi Ramen · 2340 N. California", pace: "ch4",
   bg: [W("thumb/3/3b/Chicago_River_night.jpg/1280px-Chicago_River_night.jpg"), W("thumb/3/3b/Chicago_River_night.jpg/640px-Chicago_River_night.jpg"), W("3/3b/Chicago_River_night.jpg"), W("thumb/1/12/CTA_Night.jpg/1280px-CTA_Night.jpg"), W("thumb/1/12/CTA_Night.jpg/640px-CTA_Night.jpg"), W("1/12/CTA_Night.jpg")],
   counsel: [
-    { type: "postcard", no: 6, place: "DINNER · 19:00", text: "吃饱一点。<br><br>今晚的庭审，<br>会很长。", sign: "— X" },
+    { type: "postcard", no: 6, place: "AKAHOSHI · 17:30", text: "去吃一碗拉面。<br>热一点，饱一点。<br><br>今晚的庭审，<br>会很长。", sign: "— X" },
     { type: "gate", text: "餐巾纸上，有人用番茄酱写了一行字：<br><br><i>\"北京人最想念的那碗面，叫什么？\"</i>", accept: ["炸酱面", "老北京炸酱面", "ZHAJIANGMIAN"],
       success: "炸酱面。<br>黄瓜丝、豆芽、心里美萝卜……<br>一碗面，是一座城。" },
     { type: "fragment", ids: [15, 16] },

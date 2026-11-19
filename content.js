@@ -33,7 +33,8 @@ const CONFIG = {
   useGeo: true,
   places: {
     plaza:  { name: "联邦广场 · 火烈鸟",      lat: 41.8788, lng: -87.6297, radius: 250 },
-    tomb:   { name: "历史博物馆后 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
+    tour:   { name: "71 E. Wacker · Hoyt's Tavern", lat: 41.8867, lng: -87.6252, radius: 250 },
+    tomb:   { name: "林肯公园南端 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
     vinyl:  { name: "Reckless Records",        lat: 41.9075, lng: -87.6735, radius: 500 },
     lodge:  { name: "Lincoln Lodge",           lat: 41.9182, lng: -87.6902, radius: 300 },
     home:   { name: "1414 E. 59th St.",        lat: 41.7877, lng: -87.5911, radius: 200 }
@@ -57,8 +58,6 @@ const CONFIG = {
   credits: [
     ["Calder's Flamingo", "https://commons.wikimedia.org/wiki/File:Calder-flamingo.jpg"],
     ["Chicago Federal Center", "https://commons.wikimedia.org/wiki/File:Chicago_Federal_Center.jpg"],
-    ["Couch Tomb", "https://commons.wikimedia.org/wiki/File:Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg"],
-    ["Chicago History Museum", "https://commons.wikimedia.org/wiki/File:Chicago_History.JPG"],
     ["Wicker Park", "https://commons.wikimedia.org/wiki/File:Wicker_Park,_Chicago.jpg"],
     ["CTA at night", "https://commons.wikimedia.org/wiki/File:CTA_Night.jpg"],
     ["Chicago River at night", "https://commons.wikimedia.org/wiki/File:Chicago_River_night.jpg"],
@@ -98,7 +97,7 @@ const CLUES = {
   c3:  { to: "birds", title: "\"带回家的那天\"", text: "协议签于\"被告把原告<b>带回家</b>的那天\"。<br>原告不是和她一起长大的人——是被她带回家的。" },
   c4:  { to: "birds", title: "红色的远房亲戚", text: "X 说，火烈鸟是它的远房亲戚：\"它<b>也</b>是一只鸟。\"<br>——也？" },
   c5:  { to: "birds", title: "翅膀的声音", text: "法庭最后一排，有什么东西<b>扑棱</b>了一下。<br>你回头，那里没有人。" },
-  c6:  { to: "birds", title: "两个小影子", text: "博物馆的玻璃上，你的肩膀上停着<b>两个</b>小小的影子。<br>X，可能不止一个。" },
+  c6:  { to: "birds", title: "两个小影子", text: "Death Alley 的橱窗上，你的肩膀上停着<b>两个</b>小小的影子。<br>X，可能不止一个。" },
   c7:  { to: "birds", title: "叉子形的印子", text: "协议签名旁边，有两个小小的印子：<b>ψ ψ</b>。<br>不是指印。是脚印。" },
   c8:  { to: "birds", title: "W 的最后一句话", text: "W 临走前说：\"X 从来没有离开过<b>北京</b>。<b>它们</b>一直在等她回家。\"<br>——它们？" },
   c9:  { to: "birds", title: "黄色的羽毛", text: "唱片架后面，有什么东西轻轻啄了你一下，留下一根<b>黄色</b>的羽毛。<br>现在你手里，一蓝，一黄。" },
@@ -137,9 +136,9 @@ const EXHIBITS = {
   exA: { name: "A · 小时候的日记", item: "A", place: "被告的旧书架", date: "很多年前的夏天", img: "assets/diary.jpg" },
   exB: { name: "B · 十八岁那晚的帖子", item: "B", place: "社交媒体 · 截图", date: "2024.11.24 23:58", img: "",
          html: `<div class="ev-phone"><div class="ev-phone-bar">23:58</div><img class="ev-post-photo" src="assets/ktv.jpg" alt="KTV"><div class="ev-post-text">18岁了，但我永远是个小孩</div><div class="ev-post-comment">评论 · 1　<span class="ev-blur">████████████</span></div></div>` },
-  exD: { name: "D · 协议原件", item: "D", place: "林肯公园 · Couch 墓门缝", date: "签于她带它回家的那天", img: "",
+  exD: { name: "D · 协议原件", item: "D", place: "Death Alley · 一扇锈死的后门", date: "签于她带它回家的那天", img: "",
          html: `<div class="crayon big">永远不长大协议<br><br>我保证永远不长大，<br>每天都陪你玩。<br><br><span class="tiny">除非我变成一个很酷的大人。</span><br><br>— 关傲予<br><span class="feet">ψ ψ</span></div>` },
-  depo: { name: "W · 证人W的证词", item: "W", place: "林肯公园", date: "2026.11.24", img: "",
+  depo: { name: "W · 证人W的证词", item: "W", place: "Dirksen 法院大厅", date: "2026.11.24", img: "",
          html: `<div class="ev-transcript"><div class="ev-stamp">DEPOSITION</div>每年 11 月 24 日，<br>她都吹两次蜡烛。<br>一次跟着北京，<br>一次跟着芝加哥。<br>走得再远，<br>家里的生日歌，她都听得见。</div>` },
   card: { name: "C · 一张狼人杀卡牌", item: "C", place: "被告送给助手的", date: "—", img: "assets/wolf-card.webp" },
   cafe: { name: "E · 积木咖啡店", item: "E", place: "被告送给助手的", date: "—", img: "",
@@ -199,7 +198,7 @@ const CHAPTERS = [
   <div class="sm-addr">MS. AILEEN GUAN<br><span class="redact">██████████████</span><br>1414 E. 59th St.<br>Chicago, IL 60637<br><span class="redact short">████████</span></div>
   <div class="sm-role">DEFENDANT</div>
 </div>
-<p class="sm-caps">YOU ARE REQUIRED TO APPEAR IN THE CIRCUIT COURT OF TIME, FEDERAL PLAZA, 219 S. DEARBORN STREET, CHICAGO, ON TUESDAY THE 24<sup>TH</sup> DAY OF NOVEMBER 2026 AT 10.00 O'CLOCK IN THE MORNING TO DEFEND THE ACTION OF WHICH PARTICULARS APPEAR BELOW.</p>
+<p class="sm-caps">YOU ARE REQUIRED TO APPEAR IN THE CIRCUIT COURT OF TIME, FEDERAL PLAZA, 219 S. DEARBORN STREET, CHICAGO, ON TUESDAY THE 24<sup>TH</sup> DAY OF NOVEMBER 2026 AT 1.30 O'CLOCK IN THE AFTERNOON TO DEFEND THE ACTION OF WHICH PARTICULARS APPEAR BELOW.</p>
 <p class="sm-caps">IF YOU DO NOT APPEAR JUDGMENT MAY BE GIVEN IN YOUR ABSENCE.</p>
 <div class="sm-party plaintiff">
   <div class="sm-addr">MR. X, exercising the profession of<br>being very small and waiting,<br>under the name and style of<br>"X"</div>
@@ -217,7 +216,7 @@ const CHAPTERS = [
   <div class="sm-sign"><span class="redact">████████████</span><br><b>PLAINTIFF</b><br>MR. X<br><br>Dated the 24<sup>th</sup> day of November 2026.</div>
   <div class="sm-stamp">CIRCUIT COURT OF TIME<br>THIS SUMMONS WAS POSTED ON<br><b>24 NOV 2026</b><br><span class="sm-scrawl">𝒳 ~~~</span><br>GREFFIER</div>
 </div>
-<p class="sm-zh">【译】X 告你：你答应过永远不长大，可你今天二十岁了。<br>今天上午十点，到联邦广场出庭。不来，就缺席判决。</p>` },
+<p class="sm-zh">【译】X 告你：你答应过永远不长大，可你今天二十岁了。<br>今天下午一点半，到联邦广场出庭。不来，就缺席判决。</p>` },
     { type: "clue", id: "c2" },
     { type: "clue", id: "c3" },
     { type: "document", docTitle: "案情摘要 · CASE BRIEF", html: `
@@ -283,22 +282,60 @@ const CHAPTERS = [
 <li>🤫 X 的真身是<b>蛋清和蛋黄</b>，终章才揭晓。别说漏。</li>
 </ol>
 <h3>路线</h3>
-<p>联邦广场 → 历史博物馆 · 林肯公园 → Reckless Records → 晚餐 → Lincoln Lodge</p>` },
+<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:30）→ 晚餐（19:00）→ Lincoln Lodge（21:00）→ 回家</p>` },
     { type: "codeGive", text: "把她出生的<b>年份</b>报给她：", code: "ch0_toCounsel" }
   ]
 },
 
-/* =================== 第一章 · 联邦广场 =================== */
+/* =================== 第一章 · 死巷（Gangsters & Ghosts tour）=================== */
 {
-  id: "ch1", title: "第一章", subtitle: "红色的影子", place: "联邦广场 · 219 S. Dearborn", pace: "ch1",
+  id: "ch1", title: "第一章", subtitle: "死巷", place: "Gangsters & Ghosts · 71 E. Wacker", pace: "ch1",
+  bg: [W("thumb/3/3b/Chicago_River_night.jpg/1280px-Chicago_River_night.jpg"), W("thumb/3/3b/Chicago_River_night.jpg/640px-Chicago_River_night.jpg"), W("3/3b/Chicago_River_night.jpg"), W("thumb/1/12/CTA_Night.jpg/1280px-CTA_Night.jpg"), W("thumb/1/12/CTA_Night.jpg/640px-CTA_Night.jpg"), W("1/12/CTA_Night.jpg")],
+  counsel: [
+    { type: "postcard", no: 2, place: "71 E. WACKER · 11:00", text: "这座城市的地底下，<br>埋着很多故事。<br>黑帮的，鬼的。<br><br>十一点，有个人会在河边的酒馆门口等你。<br>跟着他走。<br><br>他讲的每一个鬼故事都认真听——<br>其中有一个，是讲给你的。", sign: "— X" },
+    { type: "geo", place: "tour", text: "去 71 E. Wacker Dr，Hoyt's Tavern 门口。<br><small>Gangsters &amp; Ghosts 步行 tour，11:00 出发。</small>" },
+    { type: "whisper", text: "导游停在一条窄巷口。<br>他说，这里叫 Death Alley，<br>死过很多人。<br><br>巷口橱窗的玻璃上，<br>映出你的影子。<br><br>还有两个小小的影子，<br>停在你肩膀上。" },
+    { type: "clue", id: "c6" },
+    { type: "gate", text: "导游讲完最后一个故事，递给你一张旧明信片。背面写着一道题：<br><br><i>\"你第一次和朋友出去旅行，去的是哪座城市？\"</i>", accept: ["洛阳", "LUOYANG"],
+      success: "洛阳。<br>他连这个都知道。" },
+    { type: "fragment", ids: [5, 6] },
+    { type: "postcard", no: 3, place: "DEATH ALLEY · 12:00", text: "你听见导游说了那条巷子的名字吗？<br><br>一百多年前，那里死过很多人。<br>后来，它成了这座城市最安静的地方。<br><br>协议的原件，我托巷子里一扇锈死的后门保管。<br>只要你说得出巷子的名字，<br>门就会开一条缝。", sign: "— X" },
+    { type: "gate", text: "那条巷子，叫什么？", accept: ["DEATH ALLEY", "DEATHALLEY", "死亡巷", "死巷", "死亡小巷", "死亡之巷"],
+      success: "Death Alley。<br><br>巷子里的风是冷的，后门的铁锈蹭了你一手。<br>门缝里夹着一张泛黄的纸。<br>四周的地都是湿的，<br>只有那张纸，是干的。" },
+    { type: "award", flag: "exD" },
+    { type: "bag", items: ["exD"], text: "签名旁边，有两个小小的印子，像叉子。<br><br>最后一行，小得几乎看不见。<br><b>X 从来没有提过它。</b>" },
+    { type: "clue", id: "c7" },
+    { type: "whisper", text: "疑点二，解开了。<br><br>协议原件就在你手里。<br>它比你想象的旧，也比你想象的软——<br>像是被谁，一遍一遍地用嘴叼着，<br>藏到了这里。" },
+    { type: "fragment", ids: [7, 8, 9] },
+    { type: "photo", key: "ch1b", prompt: "在巷口，留一张照片。<br><small>拍完，放大看看。</small>" },
+    { type: "document", docTitle: "调查笔记 · 第一章", cls: "notes", html: `
+<p><b>已解开：</b>疑点二——协议原件，就藏在 Death Alley 的一扇后门里。</p>
+<p><b>新线索：</b>橱窗上，你肩膀上停着两个小小的影子；协议签名旁边，有两个叉子形的印子。</p>
+<p><b>可疑：</b>X 收的报酬是一把小米。协议签于"带回家的那天"。</p>
+<p class="doc-footnote">下一站：联邦广场。下午一点半，你要出庭了。</p>` }
+  ],
+  assistant: [
+    { type: "geo", place: "tour", text: "跟她一起，去 71 E. Wacker（Hoyt's Tavern 门口），11:00 的 tour。" },
+    { type: "document", docTitle: "🔒 今天的答案", html: `
+<dl class="lawlib">
+<dt>第一次和朋友旅行</dt><dd>洛阳</dd>
+<dt>那条巷子的名字</dt><dd>Death Alley（导游会讲到；剧院后面那条窄巷。她没听清就提示："死过很多人的那条巷子"）</dd>
+</dl>` }
+  ]
+},
+
+/* =================== 第二章 · 联邦广场 · 开庭 =================== */
+{
+  id: "ch2", title: "第二章", subtitle: "红色的影子", place: "联邦广场 · 219 S. Dearborn", pace: "ch2",
   bg: [W("thumb/7/78/Calder-flamingo.jpg/1280px-Calder-flamingo.jpg"), W("thumb/7/78/Calder-flamingo.jpg/640px-Calder-flamingo.jpg"), W("7/78/Calder-flamingo.jpg"), W("thumb/e/ec/Chicago_Federal_Center.jpg/1280px-Chicago_Federal_Center.jpg"), W("thumb/e/ec/Chicago_Federal_Center.jpg/640px-Chicago_Federal_Center.jpg"), W("e/ec/Chicago_Federal_Center.jpg")],
   counsel: [
-    { type: "postcard", no: 2, place: "FEDERAL PLAZA · 10:00", text: "我有一个红色的远房亲戚。<br><br>它也是一只鸟。<br>站在法院对面的广场上，<br>比周围的楼都醒目，<br>五十年来，一步也没走开过。<br><br>去见见它。", sign: "— X" },
+    { type: "postcard", no: 4, place: "FEDERAL PLAZA · 13:15", text: "我有一个红色的远房亲戚。<br><br>它也是一只鸟。<br>站在法院对面的广场上，<br>比周围的楼都醒目，<br>五十年来，一步也没走开过。<br><br>去见见它。", sign: "— X" },
     { type: "geo", place: "plaza", text: "去广场。<br>站到它的影子里。" },
     { type: "gate", text: "它叫什么？", accept: ["FLAMINGO", "火烈鸟", "红鹤", "THE FLAMINGO"],
       success: "Calder 的《火烈鸟》。<br>它的影子里压着一张纸条，墨迹未干：<br><br><i>\"进去。看看他们怎么审判别人。<br>记住：法庭上，也有狼。\"</i>" },
     { type: "clue", id: "c4" },
-    { type: "note", title: "旁听", text: "找一间正在开庭的法庭，坐在最后一排。<br>不要说话。<br><br>☐ 听到一次 <i>\"Objection.\"</i><br>☐ 法官看了你一眼<br>☐ 你数清楚了，法庭里有几个人<br>☐ 你听见了自己的心跳" },
+    { type: "note", title: "旁听", text: "13:30，1903 房间。<br>找到那间正在开庭的法庭，坐在最后一排。<br>不要说话。<br><br>☐ 听到一次 <i>\"Objection.\"</i><br>☐ 法官看了你一眼<br>☐ 你数清楚了，法庭里有几个人<br>☐ 你听见了自己的心跳" },
+    { type: "gate", any: true, key: "courtroom", text: "你走进了哪一间法庭？<br>写下门口的房间号：", success: "已记入卷宗。<br><br>你在最后一排坐下。<br>法槌落下的时候，你忽然觉得，今天被审判的，也许不止台上那一个人。" },
     { type: "whisper", text: "法庭，也是一个舞台。<br><br>你想起来，<br>你们第一次一起站上舞台的那天。" },
     { type: "fragment", ids: [3, 4] },
     { type: "whisper", text: "法官敲下法槌的那一刻，<br>旁听席最后一排，<br>有什么东西扑棱了一下。<br><br>你回过头。<br>座位是空的。<br>只有椅背上，沾着一点灰白的绒毛。" },
@@ -326,55 +363,15 @@ const CHAPTERS = [
     { type: "bag", items: ["exA", "exB"], text: "两件物证，封入袋中。" },
     { type: "clue", id: "r1" },
     { type: "clue", id: "r2" },
-    { type: "whisper", text: "你在最后一页签下：<br><i>Aileen</i>。<br><br>墨水，比平时红了一点。" },
-    { type: "photo", key: "ch1", prompt: "在红色的影子下，留一张照片。" },
-    { type: "document", docTitle: "调查笔记 · 第一章", cls: "notes", html: `
-<p><b>已知：</b>X 自称和火烈鸟是亲戚，说它"也是一只鸟"。X 收的报酬是一把小米。协议是在"带回家的那天"签的。</p>
-<p><b>可疑：</b>日记和十八岁的帖子，都在说"永远不长大"——像是在把你往"十岁的你"那边引。</p>
-<p><b>未知：</b>协议原件在哪里？X 为什么一直不露面？</p>
-<p class="doc-footnote">下一站：历史博物馆。X 说，你的过去收在他那里。</p>` },
-    { type: "codeGive", text: "告诉助手，你生活的城市：", code: "ch1_toAssistant" }
-  ],
-  assistant: [
-    { type: "geo", place: "plaza", text: "跟她一起，去广场。" },
-    { type: "bag", items: ["exA", "exB"], text: "🔒 只有你看得见。她问起时，再念给她听。", noAward: true },
-    { type: "document", docTitle: "🔒 关于 X", html: `
-<img class="doc-photo" src="assets/sleeve-x.jpg" alt="空档案袋">
-<p>档案袋是空的。没有照片，没有名字。<br>只有一根小羽毛。</p>
-<p class="doc-footnote">🔑 "它叫什么？"——答案 FLAMINGO：广场中央那座红色的大钢雕，Calder 的《火烈鸟》。她卡住了，就提示："抬头，找红色。"</p>` },
-    { type: "gate", text: "输入她给你的暗号：", code: "ch1_toAssistant", success: "下一站：林肯公园。" }
-  ]
-},
-
-/* =================== 第二章 · 林肯公园 =================== */
-{
-  id: "ch2", title: "第二章", subtitle: "墓园与海龟汤", place: "历史博物馆 · 林肯公园", pace: "ch2",
-  bg: [W("thumb/b/b9/Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg/1280px-Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg"), W("thumb/b/b9/Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg/640px-Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg"), W("b/b9/Couch_Tomb_Lincoln_Park_Chicago_Illinois_2020-9468.jpg"), W("thumb/2/24/Chicago_History.JPG/1280px-Chicago_History.JPG"), W("thumb/2/24/Chicago_History.JPG/640px-Chicago_History.JPG"), W("2/24/Chicago_History.JPG")],
-  counsel: [
-    { type: "postcard", no: 3, place: "1601 N. CLARK · 14:00", text: "博物馆里，收着这座城市的过去。<br><br>你的过去，收在我这里。<br><br>进去吧。<br>出来以后，往后面走。", sign: "— X" },
-    { type: "geo", place: "tomb", text: "去芝加哥历史博物馆。" },
-    { type: "whisper", text: "展柜的玻璃上，<br>映出你的影子。<br><br>还有两个小小的影子，<br>停在你肩膀上。" },
-    { type: "clue", id: "c6" },
-    { type: "gate", text: "X 在展签背面写了一道题：<br><br><i>\"你第一次和朋友出去旅行，去的是哪座城市？\"</i>", accept: ["洛阳", "LUOYANG"],
-      success: "洛阳。<br>他连这个都知道。" },
-    { type: "fragment", ids: [5, 6] },
     { type: "timedAdmit", seconds: 20,
-      prompt: "灯忽然暗了。<br>X 的问题一个接一个浮现。<br><small><b class=\"twenty\">20</b> 秒。沉默，就是承认。</small>",
+      prompt: "风忽然停了。<br>X 的问题一个接一个浮现在你手机上。<br><small><b class=\"twenty\">20</b> 秒。沉默，就是承认。</small>",
       items: [
         { text: "你答应过永远陪我玩。", correct: "承认", why: "这是真的。" },
         { text: "十八岁那晚，你想起了我。", correct: "否认", why: "你没有。" },
         { text: "你去了芝加哥，就再也没回过家。", correct: "否认", why: "你回去过。" },
         { text: "你今天，二十岁了。", correct: "承认", why: "是的。" }
       ] },
-    { type: "postcard", no: 4, place: "LINCOLN PARK · 15:00", text: "你脚下的草地，<br>一百五十年前是一座墓园。<br><br>他们把死者都迁走了。<br><b>只有一位，没有走。</b><br><br>协议的原件，我托他保管。<br>他就住在博物馆后面，<br>名字刻在门楣上。", sign: "— X" },
-    { type: "gate", text: "门楣上，刻着什么名字？", accept: ["COUCH", "IRA COUCH", "COUCH TOMB"],
-      success: "COUCH。<br><br>石门锈死了，铁栏冰凉。<br>门缝里夹着一张泛黄的纸。<br>四周的草都是湿的，<br>只有那张纸，是干的。" },
-    { type: "award", flag: "exD" },
-    { type: "bag", items: ["exD"], text: "签名旁边，有两个小小的印子，像叉子。<br><br>最后一行，小得几乎看不见。<br><b>X 从来没有提过它。</b>" },
-    { type: "clue", id: "c7" },
-    { type: "whisper", text: "疑点二，解开了。<br><br>协议原件就在你手里。<br>它比你想象的旧，也比你想象的软——<br>像是被谁，一遍一遍地用嘴叼着，<br>藏到了这里。" },
-    { type: "fragment", ids: [7, 8, 9] },
-    { type: "whisper", text: "墓碑后面，站着一个人。<br><br>是证人 <b>W</b>。<br>TA 说，TA 知道你每年生日都在做一件奇怪的事。<br><br>可 TA 只肯回答三个字：<br><b>是。不是。不重要。</b>" },
+    { type: "whisper", text: "法院大厅的长椅上，坐着一个人。<br><br>是证人 <b>W</b>。<br>TA 说，TA 知道你每年生日都在做一件奇怪的事。<br><br>可 TA 只肯回答三个字：<br><b>是。不是。不重要。</b>" },
     { type: "clue", id: "r4" },
     { type: "document", docTitle: "海龟汤 · 汤面", html: `
 <h3>汤面</h3>
@@ -392,21 +389,24 @@ const CHAPTERS = [
     { type: "bag", items: ["depo"], text: "汤底，封存。<br>疑点三，解开了：走得再远，她也没忘了家。<br><br>W 转身要走，又停下来，背对着你说了最后一句话。" },
     { type: "clue", id: "c8" },
     { type: "fragment", ids: [10, 11] },
-    { type: "photo", key: "ch2", prompt: "在那扇门前，留一张照片。<br><small>拍完，放大看看。</small>" },
-    { type: "whisper", text: "天色暗下来了。<br><br>公园里，有什么东西在树上叫了两声。" },
+    { type: "whisper", text: "你在最后一页签下：<br><i>Aileen</i>。<br><br>墨水，比平时红了一点。" },
+    { type: "photo", key: "ch2", prompt: "在红色的影子下，留一张照片。" },
+    { type: "whisper", text: "走出法院的时候，天色已经暗了一点。<br><br>广场上，有什么东西停在火烈鸟红色的钢架上，<br>叫了两声。" },
     { type: "document", docTitle: "调查笔记 · 第二章", cls: "notes", html: `
-<p><b>已解开：</b>疑点二（协议原件，在 Couch 墓的门缝里）；疑点三（她没有忘了家——每年两次蜡烛）。</p>
-<p><b>新线索：</b>玻璃上的两个小影子；协议上叉子形的脚印；W 说 X "从来没离开过北京"，还用了"它们"。</p>
+<p><b>已解开：</b>疑点三——她没有忘了家，每年生日都吹两次蜡烛。</p>
+<p><b>新线索：</b>X 说火烈鸟是它的亲戚，"它也是一只鸟"；法庭最后一排翅膀的声音；W 说 X "从来没离开过北京"，还用了"它们"。</p>
+<p><b>可疑：</b>日记和十八岁的帖子，都在说"永远不长大"——像是在把你往"十岁的你"那边引。</p>
 <p><b>排除：</b>如果 X 从没离开过北京，那今天一直在芝加哥的人……</p>
-<p class="doc-footnote">剩下的疑点：X 到底是谁？它为什么偏偏挑今天？</p>` }
+<p class="doc-footnote">剩下的疑点：X 到底是谁？它为什么偏偏挑今天？</p>` },
+    { type: "codeGive", text: "告诉助手，你生活的城市：", code: "ch1_toAssistant" }
   ],
   assistant: [
-    { type: "geo", place: "tomb", text: "跟她一起，去历史博物馆。" },
-    { type: "document", docTitle: "🔒 今天的答案", html: `
-<dl class="lawlib">
-<dt>第一次和朋友旅行</dt><dd>洛阳</dd>
-<dt>门楣上的名字</dt><dd>COUCH（博物馆正后方，LaSalle Drive 弯道旁带铁栏的小石屋）</dd>
-</dl>` },
+    { type: "geo", place: "plaza", text: "tour 结束后，跟她一起去联邦广场。<br><small>13:30 · 1903 房间 · USA v. Young。备选：13:00 · 1719 房间。</small>" },
+    { type: "bag", items: ["exA", "exB"], text: "🔒 只有你看得见。她问起时，再念给她听。", noAward: true },
+    { type: "document", docTitle: "🔒 关于 X", html: `
+<img class="doc-photo" src="assets/sleeve-x.jpg" alt="空档案袋">
+<p>档案袋是空的。没有照片，没有名字。<br>只有一根小羽毛。</p>
+<p class="doc-footnote">🔑 "它叫什么？"——答案 FLAMINGO：广场中央那座红色的大钢雕，Calder 的《火烈鸟》。她卡住了，就提示："抬头，找红色。"</p>` },
     { type: "gate", text: "她请 W 开口时，输入暗号：", code: "ch2_toAssistant" },
     { type: "document", docTitle: "🔒 你是证人 W · 汤底", html: `
 <p>她会问"是不是"的问题。你只能答：<b>是 / 不是 / 不重要</b>。声音放低，慢一点。最多 20 个问题。</p>
@@ -414,7 +414,8 @@ const CHAPTERS = [
 <p class="soup">她在<b>芝加哥</b>读书，家人在<b>北京</b>。北京比芝加哥快 <b>14 个小时</b>。<br><br>北京时间 24 号晚上，家人打视频给她唱生日歌——芝加哥这时才 24 号<b>清晨</b>六点，朋友们都还在睡。她对着手机吹了第一次蜡烛。<br><br>芝加哥 24 号晚上，朋友们给她过生日——北京已经是 <b>25 号</b>上午，家人那边的 24 号早就过完了。她吹了第二次。<br><br>两次都在她（当地的）生日当天。</p>
 <p class="doc-footnote">提示方向：她卡住时可以说"想想地点"或"想想时间"。"不重要"用于：蛋糕什么味、唱了什么歌、几根蜡烛……</p>` },
     { type: "counter", label: "她问了几个问题", max: 20 },
-    { type: "codeGive", text: "问完了（或问满 20 个），告诉她暗号：", code: "ch2_toCounsel" }
+    { type: "codeGive", text: "问完了（或问满 20 个），告诉她暗号：", code: "ch2_toCounsel" },
+    { type: "gate", text: "输入她给你的暗号：", code: "ch1_toAssistant", success: "下一站：Reckless Records。" }
   ]
 },
 
@@ -423,7 +424,7 @@ const CHAPTERS = [
   id: "ch3", title: "第三章", subtitle: "B 面", place: "Reckless Records · 1379 N. Milwaukee", pace: "ch3",
   bg: [W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/1280px-Wicker_Park%2C_Chicago.jpg"), W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/640px-Wicker_Park%2C_Chicago.jpg"), W("5/54/Wicker_Park%2C_Chicago.jpg")],
   counsel: [
-    { type: "postcard", no: 5, place: "MILWAUKEE AVE · 17:30", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
+    { type: "postcard", no: 5, place: "MILWAUKEE AVE · 15:30", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
     { type: "geo", place: "vinyl", text: "去 Milwaukee Avenue 上那家唱片店。" },
     { type: "gate", text: "唱片封套里夹着一张手写卡片。<br>是你在日本的一家 livehouse 里说过的话：<br><br><i>\"我本来是一个＿＿＿，<br>遇到你们，我们组成了旋律，<br>因此我不再孤独。\"</i>", accept: ["音符", "一个音符"],
       success: "音符。<br><br>店里的音乐停了一拍。<br>像是有谁，在认真听。" },
@@ -511,7 +512,7 @@ const CHAPTERS = [
     { type: "present", prompt: "X：<b>\"协议上，没有任何例外。\"</b><br><br>出示一件证物：",
       correct: "exD", score: 2,
       success: "你把那张纸推到他面前，指尖停在最后一行：<br><b>\"除非我变成一个很酷的大人。\"</b><br><br>白狐面具后面，只剩下很轻的呼吸声。",
-      fail: "不是这个。<br>你需要那张从门缝里拿到的纸。" },
+      fail: "不是这个。<br>你需要那张从 Death Alley 的门缝里拿到的纸。" },
     { type: "present", prompt: "X：<b>\"她去了芝加哥，就把家里忘了。\"</b><br><br>出示一件证物：",
       correct: "depo", alt: "exB", score: 1.5, altScore: 0.5,
       success: "你把汤底摊开：<br>每年生日，她都吹两次蜡烛——一次跟着北京，一次跟着芝加哥。<br><br>X 慢慢低下了头。",
@@ -592,7 +593,7 @@ const CHAPTERS = [
 <p>三年前的一个晚上，有个人在一张很长的餐桌边认识了你。那时候的她，还不太敢做新的事——没进过 livehouse，没上过台，没跟朋友出过远门。是你拉着她去的。你陪她一言不合地跟踪别人，陪她站在鼓声最响的地方，陪她走上 Keystone Idol 的舞台，划掉了清单上的第一件事。后来是洛阳的夜，西藏的车站，毕业那天的长袍，夏威夷的沙滩。她一直走在你旁边，学着把日子过得热闹一点。</p>
 <p>你说过，你本来是一个音符。可你大概不知道，对别人来说，你也是那个让旋律响起来的人。</p>
 <p>所以今天，她想把这件事还给你。</p>
-<p>今天的一切，都是第一次：第一次坐进真正的联邦法庭旁听，第一次在一座一百五十年的老墓前找线索，第一次在唱片店翻一张不认识的 B 面，第一次坐上陪审席，审判一个喜剧演员。她把你教给她的事——去试试，去感受——原样做成了一整天，送回给你。</p>
+<p>今天的一切，都是第一次：第一次坐进真正的联邦法庭旁听，第一次跟着导游走进 Death Alley，听这座城市的鬼故事，第一次在唱片店翻一张不认识的 B 面，第一次坐上陪审席，审判一个喜剧演员。她把你教给她的事——去试试，去感受——原样做成了一整天，送回给你。</p>
 <p>这就是这份礼物的意思：你总是让别人不再孤独。今天，轮到你被别人认真地惦记一次。</p>
 <p>协议作废了。但判决书上附带的那一条，本庭希望你一直遵守：二十岁以后，也要好奇，也要快乐。</p>
 <p class="doc-sign">现在，回家吧。<br>最后一件证物，在 1414 E. 59th St. 等你。</p>

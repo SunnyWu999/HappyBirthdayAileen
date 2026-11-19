@@ -228,36 +228,8 @@
   function btn(label, onclick, cls = "primary") { return el("button", { class: "btn " + cls, onclick }, label); }
 
   // ---------- 主流程 ----------
-  // ---- 口令：只有被告需要，写在门口那封信上（镜像）----
-  const PASS = (CONFIG.passphrase || []).map((x) => norm(x).replace(/[，。,.！!？?、\s]/g, ""));
-  function renderPassphrase() {
-    const root = app(); root.innerHTML = "";
-    let wrong = 0;
-    const input = el("input", { class: "code-input free", placeholder: "写下口令", autocomplete: "off" });
-    const hint = el("div", { class: "muted" });
-    const c = card("center gate pass-gate",
-      el("div", { class: "lock" }, "🕯"),
-      el("div", { class: "text", html: "这份传票，只能由被告本人签收。<br><br>念出信上的<b>口令</b>。<br>然后，把它写下来。" }),
-      input, hint);
-    const check = () => {
-      const v = norm(input.value).replace(/[，。,.！!？?、\s]/g, "");
-      if (PASS.includes(v)) {
-        localStorage.setItem("cf20_pass", "1");
-        c.innerHTML = "";
-        c.append(el("div", { class: "whisper-text dark" , html: "……<br>我听见了。<br><br>我一直在窗边等你。" }), btn("签收传票", render));
-        return;
-      }
-      wrong++; c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
-      hint.innerHTML = wrong >= 2 ? "口令只在镜子里说真话。<br>拿去照照镜子。" : "不对。窗外有什么东西，动了一下。";
-    };
-    input.addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
-    c.append(btn("签收", check));
-    root.append(el("div", { class: "landing" }, el("h1", {}, "第二十号档案"), c));
-  }
-
   function render() {
     if (!role) return renderLanding();
-    if (role === "counsel" && PASS.length && !localStorage.getItem("cf20_pass")) return renderPassphrase();
     load();
     if (S.done) return renderEnd();
     const chapter = CHAPTERS[S.ch];

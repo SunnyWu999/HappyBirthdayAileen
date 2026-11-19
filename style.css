@@ -661,5 +661,3 @@ body { background-color: #4a3524; }
 .deduce .opt .muted { margin: 0; font-size: 12px; }
 .feedback.bad { border-left-color: var(--wax); }
 .topbar { gap: 6px; } .topbar .role-badge, .topbar .frag-count { white-space: nowrap; font-size: 12px; padding: 2px 8px; } .topbar .icon-btn { padding: 0 2px; }
-.whisper-text.dark{color:#3a2a1a;text-shadow:none}
-.pass-gate, .pass-gate .text, .pass-gate .lock { color: #2b1d12 !important; text-shadow: none !important; }

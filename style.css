@@ -661,3 +661,4 @@ body { background-color: #4a3524; }
 .deduce .opt .muted { margin: 0; font-size: 12px; }
 .feedback.bad { border-left-color: var(--wax); }
 .topbar { gap: 6px; } .topbar .role-badge, .topbar .frag-count { white-space: nowrap; font-size: 12px; padding: 2px 8px; } .topbar .icon-btn { padding: 0 2px; }
+.feedback.twist { border-left-color: #1b2a4a; background: rgba(27,42,74,.06); font-family: var(--brush); font-size: 18px; line-height: 1.9; }

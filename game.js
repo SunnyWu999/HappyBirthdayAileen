@@ -155,7 +155,7 @@
   function scatterFeathers() {
     let box = document.getElementById("feathers");
     if (!box) { box = el("div", { id: "feathers", "aria-hidden": "true" }); document.body.prepend(box); }
-    const n = !S ? 0 : S.flags.feathers ? 14 : 4;
+    const n = !S ? 0 : S.flags.feathers ? 14 : 0;
     const key = (S ? S.ch : -1) + ":" + n;
     if (box.dataset.key === key) return;
     box.dataset.key = key; box.innerHTML = "";
@@ -1015,45 +1015,61 @@
       btn("记下了", done));
   };
 
-  // ---- 指认 X ----
+  // ---- 指认 X（两段：先指认嫌疑人，选中"十岁的你"后反转）----
   STEPS.deduce = (s, done) => {
-    let picked = null, tries = 0;
+    let tries = 0;
+    const tw = typeof TWIST !== "undefined" ? TWIST : null;
     const c = card("deduce", el("h2", {}, "指认"),
-      el("div", { class: "prompt", html: "在 X 摘下面具之前，<br>说出它的名字。<br><small>先选嫌疑人，再从你的线索里挑出 <b>三条</b> 证据。</small>" }));
-    const sus = el("div", { class: "options" });
-    const susBtns = SUSPECTS.map((p) => {
-      const b = el("button", { class: "opt", onclick: () => { picked = p; susBtns.forEach((x) => x.classList.toggle("on", x === b)); } },
-        el("b", {}, p.name), el("div", { class: "muted" }, p.note));
-      sus.append(b); return b;
-    });
-    const chosen = new Set();
-    const cl = el("div", { class: "clue-pick" });
-    (S.clues || []).forEach((id) => {
-      const b = el("button", { class: "check", onclick: () => {
-        if (chosen.has(id)) { chosen.delete(id); b.classList.remove("on"); }
-        else { if (chosen.size >= 3) return toast("只能挑三条"); chosen.add(id); b.classList.add("on"); }
-      } }, t(CLUES[id].title));
-      cl.append(b);
-    });
+      el("div", { class: "prompt", html: "在 X 摘下面具之前，<br>说出它是谁。" }));
     const fb = el("div", {});
-    const go = btn("指认", () => {
-      if (!picked) return toast("先选一个嫌疑人");
-      if (chosen.size < Math.min(3, (S.clues || []).length)) return toast("挑三条线索作为证据");
-      fb.innerHTML = "";
-      if (picked.id !== "birds") {
+    const sus = el("div", { class: "options" });
+    const susH = el("h3", {}, "嫌疑人");
+    const phase2 = () => {
+      sus.remove(); susH.remove(); fb.innerHTML = "";
+      c.append(el("div", { class: "feedback twist", html: t(tw.text) }));
+      let picked = null;
+      const opts = el("div", { class: "options" });
+      const ob = tw.options.map((o) => {
+        const b = el("button", { class: "opt", onclick: () => { picked = o; ob.forEach((x) => x.classList.toggle("on", x === b)); } }, el("b", {}, o.name));
+        opts.append(b); return b;
+      });
+      const chosen = new Set();
+      const cl = el("div", { class: "clue-pick" });
+      (S.clues || []).forEach((id) => {
+        const b = el("button", { class: "check", onclick: () => {
+          if (chosen.has(id)) { chosen.delete(id); b.classList.remove("on"); }
+          else { if (chosen.size >= 3) return toast("只能挑三条"); chosen.add(id); b.classList.add("on"); }
+        } }, t(CLUES[id].title));
+        cl.append(b);
+      });
+      const fb2 = el("div", {});
+      const go = btn("就是它们", () => {
+        if (!picked) return toast("先选一个");
+        if (chosen.size < Math.min(3, (S.clues || []).length)) return toast("挑三条线索，重新读一遍它们");
+        fb2.innerHTML = "";
+        if (picked.id !== "birds") {
+          tries++; if (tries === 1) addScore(-0.5); save();
+          fb2.append(el("div", { class: "feedback bad", html: t(picked.elim) }), el("div", { class: "muted" }, "再想想。"));
+          return;
+        }
+        const good = [...chosen].filter((id) => CLUES[id].to === "birds").length;
+        addScore(2 + good * 0.5); save();
+        [...opts.children, ...cl.children].forEach((x) => (x.disabled = true));
+        go.remove();
+        fb2.append(el("div", { class: "feedback", html: "白狐面具上，裂开了一道细细的缝。<br><br>" + t(tw.reveal) }), btn("看它摘下面具", done));
+      }, "danger");
+      c.append(el("h3", {}, tw.ask), opts, el("h3", {}, "重新读一遍你的线索（选三条）"), cl, go, fb2);
+    };
+    SUSPECTS.forEach((p) => {
+      const b = el("button", { class: "opt", onclick: () => {
+        fb.innerHTML = "";
+        if (tw && p.id === tw.from) return phase2();
         tries++; if (tries === 1) addScore(-0.5); save();
-        fb.append(el("div", { class: "feedback bad", html: "X 轻轻摇了摇头。<br><br>" + t(picked.elim) }), el("div", { class: "muted" }, "再想想。"));
-        return;
-      }
-      const good = [...chosen].filter((id) => CLUES[id].to === "birds").length;
-      addScore(2 + good * 0.5); save();
-      [...sus.children, ...cl.children].forEach((x) => (x.disabled = true));
-      go.remove();
-      fb.append(el("div", { class: "feedback", html: "白狐面具上，裂开了一道细细的缝。<br><br>" +
-        (good === 3 ? "三条证据，全部指向同一个答案。" : good + " 条证据站得住。剩下的，不太像。") +
-        "<br><br><i>小米。脚印。翅膀。两个影子。一蓝一黄。从来没离开过北京。</i>" }), btn("看它摘下面具", done));
-    }, "danger");
-    c.append(el("h3", {}, "嫌疑人"), sus, el("h3", {}, "你的证据（选三条）"), cl, go, fb);
+        fb.append(el("div", { class: "feedback bad", html: "X 轻轻摇了摇头。<br><br>" + t(p.elim || "") }), el("div", { class: "muted" }, "再想想。"));
+      } }, el("b", {}, p.name), el("div", { class: "muted" }, p.note));
+      sus.append(b);
+    });
+    c.append(susH, sus, fb);
     return c;
   };
 

@@ -36,7 +36,7 @@ const CONFIG = {
     tour:   { name: "71 E. Wacker · Hoyt's Tavern", lat: 41.8867, lng: -87.6252, radius: 250 },
     tomb:   { name: "林肯公园南端 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
     vinyl:  { name: "Reckless Records",        lat: 41.9075, lng: -87.6735, radius: 500 },
-    lodge:  { name: "Lincoln Lodge",           lat: 41.9182, lng: -87.6902, radius: 300 },
+    market: { name: "88 Marketplace · 中超",   lat: 41.8539, lng: -87.6416, radius: 250 },
     home:   { name: "1414 E. 59th St.",        lat: 41.7877, lng: -87.5911, radius: 200 }
   },
 
@@ -282,7 +282,7 @@ const CHAPTERS = [
 <li>🤫 X 的真身是<b>蛋清和蛋黄</b>，终章才揭晓。别说漏。</li>
 </ol>
 <h3>路线</h3>
-<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:30）→ 晚餐 · Akahoshi Ramen（17:30）→ Lincoln Lodge（21:00）→ 回家</p>` },
+<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:15）→ 88 Marketplace 中超买菜（约 17:00）→ 回家做炸酱面（18:30）→ 晚饭 · 开庭 → 终章</p>` },
     { type: "codeGive", text: "把她出生的<b>年份</b>报给她：", code: "ch0_toCounsel" }
   ]
 },
@@ -470,14 +470,16 @@ const CHAPTERS = [
 
 /* =================== 第四章 · 晚餐 · 开庭 =================== */
 {
-  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "Akahoshi Ramen · 2340 N. California", pace: "ch4",
+  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "88 Marketplace → 1414 E. 59th St.", pace: "ch4",
   bg: [W("thumb/3/3b/Chicago_River_night.jpg/1280px-Chicago_River_night.jpg"), W("thumb/3/3b/Chicago_River_night.jpg/640px-Chicago_River_night.jpg"), W("3/3b/Chicago_River_night.jpg"), W("thumb/1/12/CTA_Night.jpg/1280px-CTA_Night.jpg"), W("thumb/1/12/CTA_Night.jpg/640px-CTA_Night.jpg"), W("1/12/CTA_Night.jpg")],
   counsel: [
-    { type: "postcard", no: 6, place: "AKAHOSHI · 17:30", text: "去吃一碗拉面。<br>热一点，饱一点。<br><br>今晚的庭审，<br>会很长。", sign: "— X" },
+    { type: "postcard", no: 6, place: "CHINATOWN · 17:00", text: "去买几样东西。<br><br>北京人想家的时候，<br>会给自己做一碗面。<br><br>今晚，你来做。<br>做完，我们开庭。", sign: "— X" },
+    { type: "geo", place: "market", text: "去 Chinatown 的 88 Marketplace（2105 S. Jefferson St.，二楼）。" },
     { type: "gate", text: "餐巾纸上，有人用番茄酱写了一行字：<br><br><i>\"北京人最想念的那碗面，叫什么？\"</i>", accept: ["炸酱面", "老北京炸酱面", "ZHAJIANGMIAN"],
       success: "炸酱面。<br>黄瓜丝、豆芽、心里美萝卜……<br>一碗面，是一座城。" },
     { type: "fragment", ids: [15, 16] },
-    { type: "whisper", text: "法庭很冷。<br>墙上所有的钟，<br>都停在 11:24。" },
+    { type: "note", title: "X 的购物清单", text: "<b>酱：</b>☐ 六必居干黄酱　☐ 甜面酱<br><b>肉：</b>☐ 五花肉（或肥瘦相间的猪肉馅）<br><b>菜码：</b>☐ 黄瓜　☐ 豆芽　☐ 心里美萝卜（或白萝卜）　☐ 黄豆<br><b>其他：</b>☐ 宽面 / 手擀面　☐ 葱　☐ 姜　☐ 大蒜<br><br><small>清单背面有一行小字：<i>\"两份。有人会陪你吃。\"</i></small>" },
+    { type: "whisper", text: "回到 1414 E. 59th St.。<br><br>酱在锅里咕嘟咕嘟地冒泡，<br>满屋子都是北京的味道。<br><br>你放下筷子的那一刻，<br>厨房里所有的钟，<br>都停在 11:24。<br><br>开庭了。" },
     { type: "jurySelect", strikes: 3,
       prompt: "天黑请闭眼。<br>八个陪审员里，混进了<b>三匹狼</b>。<br>你是预言家。可以<b>请走三个</b>。<br><small>助手替你验人。</small>",
       jurors: [
@@ -535,6 +537,7 @@ const CHAPTERS = [
     { type: "codeGive", text: "告诉助手：", code: "ch5_toAssistant" }
   ],
   assistant: [
+    { type: "geo", place: "market", text: "跟她一起，去 Chinatown 的 88 Marketplace。" },
     { type: "document", docTitle: "🔒 答案", html: `<dl class="lawlib"><dt>北京人最想念的那碗面</dt><dd>炸酱面</dd></dl>` },
     { type: "document", docTitle: "🔒 预言家的查验结果", html: `
 <dl class="lawlib">
@@ -560,14 +563,13 @@ const CHAPTERS = [
   ]
 },
 
-/* =================== 终章 · Lincoln Lodge =================== */
+/* =================== 终章 · 厨房 =================== */
 {
-  id: "ch5", title: "终章", subtitle: "白狐面具", place: "Lincoln Lodge · 2040 N. Milwaukee", pace: "ch5",
+  id: "ch5", title: "终章", subtitle: "白狐面具", place: "1414 E. 59th St. · 厨房", pace: "ch5",
   bg: [W("thumb/1/16/Logan_Square_%287979593889%29.jpg/1280px-Logan_Square_%287979593889%29.jpg"), W("thumb/1/16/Logan_Square_%287979593889%29.jpg/640px-Logan_Square_%287979593889%29.jpg"), W("1/16/Logan_Square_%287979593889%29.jpg"), W("thumb/7/70/Illinois_Centennial_Memorial_Column.jpg/1280px-Illinois_Centennial_Memorial_Column.jpg"), W("thumb/7/70/Illinois_Centennial_Memorial_Column.jpg/640px-Illinois_Centennial_Memorial_Column.jpg"), W("7/70/Illinois_Centennial_Memorial_Column.jpg")],
   counsel: [
-    { type: "postcard", no: 7, place: "2040 N. MILWAUKEE · 21:00", text: "今晚九点，<br>你会坐上另一张陪审席。<br><br>散场之后，<br>我会摘下面具。", sign: "— X" },
-    { type: "geo", place: "lodge", text: "去 Lincoln Lodge。" },
-    { type: "whisper", text: "散场了。<br>门外的街灯，一盏一盏地熄灭。<br><br>X 站在最后一盏下面。<br>白狐面具，在黑暗里微微发亮。" },
+    { type: "postcard", no: 7, place: "THE KITCHEN · 21:00", text: "面吃完了吗？<br>碗洗了吗？<br><br>窗外起风了。<br>我就在窗外。<br><br>把灯关掉一盏。<br>我会摘下面具。", sign: "— X" },
+    { type: "whisper", text: "你关掉了一盏灯。<br><br>厨房暗下来。<br>窗玻璃上，慢慢浮出一张白狐面具。<br><br>它就停在窗台上。<br>一动不动。" },
     { type: "deduce" },
     { type: "narration", title: "面具之下", text: "X 抬起手，慢慢摘下面具。<br><br>面具下面，不是一个人。<br><br>是两只小鸟。<br>一只蓝白色，一只黄色。<br><br><b>{plaintiff}</b>。" },
     { type: "feathers", text: "{plaintiffMessage}" },
@@ -580,7 +582,6 @@ const CHAPTERS = [
       bank: ["蛋清和蛋黄", "十岁的她", "北京", "芝加哥", "认输", "快乐", "小孩", "大人", "第一次", "最后一次", "去尝试新鲜的东西", "永远不长大"],
       perCorrect: 0.5,
       okText: "全部还原。<br><br>疑点四，解开了。<br>案子，到这里，才算真正结束。" },
-    { type: "gate", any: true, key: "comicVerdict", text: "最后一件事。<br><br>写下今晚的演出里，<br>你们审判的那个人：", success: "已记入卷宗。" },
     { type: "signature", who: "counsel", label: "Aileen，请签名" },
     { type: "signature", who: "assistant", label: "把手机交给助手，请 TA 签名" },
     { type: "judgment" },
@@ -593,19 +594,16 @@ const CHAPTERS = [
 <p>三年前的一个晚上，有个人在一张很长的餐桌边认识了你。那时候的她，还不太敢做新的事——没进过 livehouse，没上过台，没跟朋友出过远门。是你拉着她去的。你陪她一言不合地跟踪别人，陪她站在鼓声最响的地方，陪她走上 Keystone Idol 的舞台，划掉了清单上的第一件事。后来是洛阳的夜，西藏的车站，毕业那天的长袍，夏威夷的沙滩。她一直走在你旁边，学着把日子过得热闹一点。</p>
 <p>你说过，你本来是一个音符。可你大概不知道，对别人来说，你也是那个让旋律响起来的人。</p>
 <p>所以今天，她想把这件事还给你。</p>
-<p>今天的一切，都是第一次：第一次坐进真正的联邦法庭旁听，第一次跟着导游走进 Death Alley，听这座城市的鬼故事，第一次在唱片店翻一张不认识的 B 面，第一次坐上陪审席，审判一个喜剧演员。她把你教给她的事——去试试，去感受——原样做成了一整天，送回给你。</p>
+<p>今天的一切，都是第一次：第一次坐进真正的联邦法庭旁听，第一次跟着导游走进 Death Alley，听这座城市的鬼故事，第一次在唱片店翻一张不认识的 B 面，第一次在芝加哥，亲手给自己做一碗北京的炸酱面。她把你教给她的事——去试试，去感受——原样做成了一整天，送回给你。</p>
 <p>这就是这份礼物的意思：你总是让别人不再孤独。今天，轮到你被别人认真地惦记一次。</p>
 <p>协议作废了。但判决书上附带的那一条，本庭希望你一直遵守：二十岁以后，也要好奇，也要快乐。</p>
-<p class="doc-sign">现在，回家吧。<br>最后一件证物，在 1414 E. 59th St. 等你。</p>
+<p class="doc-sign">你已经在家了。<br>最后一件证物，就在你身后。</p>
 </div>` },
-    { type: "geo", place: "home", text: "最后一站。<br>回家。<br><br><small>1414 E. 59th St., Chicago, IL 60637</small>" },
     { type: "surprise", text: "抬头。<br><br>吴妍曦有礼物给你。" }
   ],
   assistant: [
-    { type: "geo", place: "lodge", text: "跟她一起，去 Lincoln Lodge。" },
-    { type: "narration", title: "最后", text: "散场后，她会看到 X 摘下面具——是蛋清和蛋黄。<br>她会收齐二十片记忆，写下今晚演出里审判的那个人，再把手机交给你签名。<br>然后她会读到结案附言，被带回 1414 E. 59th St.。" },
-    { type: "geo", place: "home", text: "一起回 1414 E. 59th St.<br><small>到了以后，她的手机会写：\"抬头，吴妍曦有礼物给你\"，并开始放生日快乐歌。</small>" },
-    { type: "narration", title: "🎁 现在", text: "站在她面前。<br>等她抬头。<br><br>人物肖像衣服 · 黄金蛋糕 · 手写书 · 吉他支架。" }
+    { type: "narration", title: "最后", text: "吃完炸酱面、洗完碗，她会看到 X 摘下面具——是蛋清和蛋黄。<br>她会收齐二十片记忆，还原真相，再把手机交给你签名。<br>然后她会读到结案附言，最后一句是：<i>\"最后一件证物，就在你身后。\"</i>" },
+    { type: "narration", title: "🎁 现在", text: "她的手机会写：\"抬头，吴妍曦有礼物给你\"，并开始放生日歌。<br>那一刻，你站在她身后。<br><br>人物肖像衣服 · 黄金蛋糕 · 手写书 · 吉他支架。" }
   ]
 }
 ];

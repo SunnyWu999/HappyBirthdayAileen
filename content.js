@@ -36,7 +36,6 @@ const CONFIG = {
     tour:   { name: "71 E. Wacker · Hoyt's Tavern", lat: 41.8867, lng: -87.6252, radius: 250 },
     tomb:   { name: "林肯公园南端 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
     vinyl:  { name: "Reckless Records",        lat: 41.9075, lng: -87.6735, radius: 500 },
-    market: { name: "88 Marketplace · 中超",   lat: 41.8539, lng: -87.6416, radius: 250 },
     home:   { name: "1414 E. 59th St.",        lat: 41.7877, lng: -87.5911, radius: 200 }
   },
 
@@ -153,7 +152,7 @@ const EXHIBITS = {
   exD: { name: "D · 协议原件", item: "D", place: "Death Alley · 一扇锈死的后门", date: "很多年前的一个夏天", img: "",
          html: `<div class="crayon big">永远不长大协议<br><br>我保证永远不长大，<br>每天都陪你玩。<br><br><span class="tiny">除非我变成一个很酷的大人。</span><br><br>— 关傲予<br><span class="feet">ψ ψ</span></div>` },
   depo: { name: "W · 证人W的证词", item: "W", place: "Dirksen 法院大厅", date: "2026.11.24", img: "",
-         html: `<div class="ev-transcript"><div class="ev-stamp">DEPOSITION</div>两次蜡烛，<br>五句生日快乐，<br>五个时区。<br>北京，是第一个。<br>她离家再远，<br>家里的零点，永远最先到。</div>` },
+         html: `<div class="ev-transcript"><div class="ev-stamp">DEPOSITION</div>一次蜡烛，<br>五句生日快乐，<br>五个时区。<br>北京，是第一个。<br>她离家再远，<br>家里的零点，永远最先到。</div>` },
   card: { name: "C · 一张狼人杀卡牌", item: "C", place: "被告送给助手的", date: "—", img: "assets/wolf-card.webp" },
   cafe: { name: "E · 积木咖啡店", item: "E", place: "被告送给助手的", date: "—", img: "",
          html: `<div class="ev-gift">☕<br><b>积木咖啡店</b><br><small>一块一块拼起来的</small></div>` },
@@ -301,7 +300,7 @@ const CHAPTERS = [
 <li>🤫 X 的真身是<b>蛋清和蛋黄</b>，终章才揭晓。别说漏。</li>
 </ol>
 <h3>路线</h3>
-<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ Reckless Records（约 15:15）→ 88 超市买菜（约 16:45）→ 回家做炸酱面和蛋糕（18:15）→ 晚饭 · 开庭 → 终章</p>` },
+<p>Gangsters &amp; Ghosts 步行 tour（11:00，71 E. Wacker）→ 联邦广场 · 法院（13:30，1903 房间）→ The Strip Club 拍照亭（15:05）→ Reckless Records（15:40）→ Guitar Center（16:40）→ 回家做炸酱面和蛋糕（18:00）→ 晚饭 · 开庭 → 终章</p>` },
     { type: "codeGive", text: "把她出生的<b>年份</b>报给她：", code: "ch0_toCounsel" }
   ]
 },
@@ -394,13 +393,13 @@ const CHAPTERS = [
     { type: "clue", id: "r4" },
     { type: "document", docTitle: "海龟汤 · 汤面", html: `
 <h3>汤面</h3>
-<p class="soup">她的生日，来了五次。<br><br>她只吹了两次蜡烛。</p>
+<p class="soup">她的生日，来了五次。<br><br>她只吹了一次蜡烛。</p>
 <p class="doc-zh"><b>为什么？</b></p>
 <p class="doc-footnote">向 W 提问。只能问"是不是"的问题。最多 <b class="twenty">20</b> 个。</p>` },
     { type: "codeGive", text: "把暗号（你们认识的那天）告诉助手，请 W 开口：", code: "ch2_toAssistant" },
     { type: "gate", text: "问完了？输入助手给你的<b>暗号</b>，揭开汤底：", code: "ch2_toCounsel" },
     { type: "cloze", prompt: "还原那一天。<br><small>先点一个空格，再点下面的词。</small>",
-      text: "五句\"生日快乐\"，来自五个不同的 {{0}}。<br>最早的一句来自 {{1}}——芝加哥那时才 23 号上午十点，她对着视频，吹了第一次蜡烛。<br>傍晚六点，{{2}} 走到了零点。<br>晚上十一点，轮到 {{3}}。<br>零点整，芝加哥。身边的人，为她点起了第二次蜡烛。<br>最后一句在凌晨两点到达，来自 {{4}}——那里，才刚刚走进 24 号。<br>每一个人都守着 {{5}} 的零点，只为了做第一个对她说的人。",
+      text: "五句\"生日快乐\"，来自五个不同的 {{0}}。<br>最早的一句来自 {{1}}——芝加哥那时才 23 号上午十点，家人在视频里，对着还没过生日的她唱完了生日歌。<br>傍晚六点，{{2}} 走到了零点。<br>晚上十一点，轮到 {{3}}。<br>零点整，芝加哥。身边的人，为她点起了唯一的一根蜡烛。<br>最后一句在凌晨两点到达，来自 {{4}}——那里，才刚刚走进 24 号。<br>每一个人都守着 {{5}} 的零点，只为了做第一个对她说的人。",
       answers: ["时区", "北京", "伦敦", "纽约", "洛杉矶", "自己"],
       bank: ["城市", "时区", "北京", "悉尼", "伦敦", "巴黎", "纽约", "丹佛", "洛杉矶", "东京", "自己", "她"],
       perCorrect: 0.5 },
@@ -431,13 +430,13 @@ const CHAPTERS = [
 <p>她会问"是不是"的问题。你只能答：<b>是 / 不是 / 不重要</b>。声音放低，慢一点。最多 20 个问题。</p>
 <h3>汤底</h3>
 <p class="soup">五个人，散在<b>五个时区</b>。每个人都在等<b>自己那里的</b> 11 月 24 日零点，好第一时间对她说生日快乐。<br><br>
-① <b>北京</b>（家人）：北京零点 = 芝加哥 <b>23 号上午 10 点</b>。家人打来视频，她对着屏幕吹了<b>第一次</b>蜡烛——芝加哥的日历上还是 23 号。<br>
+① <b>北京</b>（家人）：北京零点 = 芝加哥 <b>23 号上午 10 点</b>。家人打来视频唱生日歌——芝加哥的日历上还是 23 号，她的生日"还没到"，所以没有点蜡烛。<br>
 ② <b>伦敦</b>：伦敦零点 = 芝加哥 23 号傍晚 6 点。<br>
 ③ <b>纽约</b>（美东）：纽约零点 = 芝加哥 23 号晚上 11 点。<br>
-④ <b>芝加哥</b>：零点整，身边的人为她点起<b>第二次</b>蜡烛。<br>
+④ <b>芝加哥</b>：零点整，身边的人为她点起<b>唯一一次</b>蜡烛——只有这一次，是她"自己的"生日零点。<br>
 ⑤ <b>洛杉矶</b>（美西）：洛杉矶零点 = 芝加哥 24 号凌晨 2 点。最后一句到的时候，身边的人都睡了。<br><br>
 没有人记错日子。每个人都守着自己的零点——只为了做那个"第一个"。</p>
-<p class="doc-footnote">汤面只有两句：<i>"她的生日，来了五次。她只吹了两次蜡烛。"</i><br>她要自己问出：五次是五个人说的"生日快乐"、五个人在五个时区、每个人都卡着自己的零点、第一次吹蜡烛时芝加哥还是 23 号。<br><b>提示节奏：</b>问满 10 个 →"五次，是五个人说的。"　问满 14 个 →"他们不在同一个地方。"　问满 18 个 →"零点，是谁的零点？"</p>` },
+<p class="doc-footnote">汤面只有两句：<i>"她的生日，来了五次。她只吹了一次蜡烛。"</i><br>她要自己问出：五次是五个人说的"生日快乐"、五个人在五个时区、每个人都卡着自己的零点、第一句来的时候芝加哥还是 23 号、唯一一次吹蜡烛是在芝加哥零点。<br><b>提示节奏：</b>问满 10 个 →"五次，是五个人说的。"　问满 14 个 →"他们不在同一个地方。"　问满 18 个 →"零点，是谁的零点？"</p>` },
     { type: "counter", label: "她问了几个问题", max: 20 },
     { type: "codeGive", text: "问完了（或问满 20 个），告诉她暗号：", code: "ch2_toCounsel" },
     { type: "gate", text: "输入她给你的暗号：", code: "ch1_toAssistant", success: "下一站：Reckless Records。" }
@@ -449,7 +448,7 @@ const CHAPTERS = [
   id: "ch3", title: "第三章", subtitle: "B 面", place: "Reckless Records · 1379 N. Milwaukee", pace: "ch3",
   bg: [W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/1280px-Wicker_Park%2C_Chicago.jpg"), W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/640px-Wicker_Park%2C_Chicago.jpg"), W("5/54/Wicker_Park%2C_Chicago.jpg")],
   counsel: [
-    { type: "postcard", no: 5, place: "MILWAUKEE AVE · 15:15", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
+    { type: "postcard", no: 5, place: "MILWAUKEE AVE · 15:40", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
     { type: "geo", place: "vinyl", text: "去 Milwaukee Avenue 上那家唱片店。" },
     { type: "gate", text: "唱片封套里夹着一张手写卡片。<br>是你在日本的一家 livehouse 里说过的话：<br><br><i>\"我本来是一个＿＿＿，<br>遇到你们，我们组成了旋律，<br>因此我不再孤独。\"</i>", accept: ["音符", "一个音符"],
       success: "音符。<br><br>店里的音乐停了一拍。<br>像是有谁，在认真听。" },
@@ -495,15 +494,14 @@ const CHAPTERS = [
 
 /* =================== 第四章 · 晚餐 · 开庭 =================== */
 {
-  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "88 超市 → 1414 E. 59th St. · 炸酱面与蛋糕", pace: "ch4",
+  id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "1414 E. 59th St. · 炸酱面与蛋糕", pace: "ch4",
   bg: [W("thumb/3/3b/Chicago_River_night.jpg/1280px-Chicago_River_night.jpg"), W("thumb/3/3b/Chicago_River_night.jpg/640px-Chicago_River_night.jpg"), W("3/3b/Chicago_River_night.jpg"), W("thumb/1/12/CTA_Night.jpg/1280px-CTA_Night.jpg"), W("thumb/1/12/CTA_Night.jpg/640px-CTA_Night.jpg"), W("1/12/CTA_Night.jpg")],
   counsel: [
-    { type: "postcard", no: 6, place: "CHINATOWN · 16:45", text: "去买几样东西。<br><br>北京人想家的时候，<br>会给自己做一碗面。<br>过生日的人，<br>应该有一个自己烤的蛋糕。<br><br>今晚，两样都由你来做。<br>做完，我们开庭。", sign: "— X" },
-    { type: "geo", place: "market", text: "去 Chinatown 的 88 超市（88 Marketplace，2105 S. Jefferson St.，二楼）。" },
+    { type: "postcard", no: 6, place: "THE KITCHEN · 18:00", text: "回家吧。<br><br>北京人想家的时候，<br>会给自己做一碗面。<br>过生日的人，<br>应该有一个自己烤的蛋糕。<br><br>今晚，两样都由你来做。<br>做完，我们开庭。", sign: "— X" },
     { type: "gate", text: "餐巾纸上，有人用番茄酱写了一行字：<br><br><i>\"北京人最想念的那碗面，叫什么？\"</i>", accept: ["炸酱面", "老北京炸酱面", "ZHAJIANGMIAN"],
       success: "炸酱面。<br>黄瓜丝、豆芽、心里美萝卜……<br>一碗面，是一座城。" },
     { type: "fragment", ids: [15, 16] },
-    { type: "note", title: "X 的购物清单", text: "<b>炸酱面</b><br>☐ 六必居干黄酱　☐ 甜面酱　☐ 五花肉<br>☐ 黄瓜　☐ 豆芽　☐ 心里美萝卜（或白萝卜）　☐ 黄豆<br>☐ 宽面 / 手擀面　☐ 葱　☐ 姜　☐ 大蒜<br><br><b>蛋糕</b><br>☐ 鸡蛋　☐ 低筋面粉　☐ 白糖　☐ 牛奶　☐ 黄油<br>☐ 淡奶油　☐ 草莓<br>☐ 蜡烛 · <b>两根</b>　<small>（你知道为什么。）</small><br><br><small>清单背面有一行小字：<i>\"两份。有人会陪你吃。\"</i></small>" },
+    { type: "note", title: "X 的食材清单", text: "<small>厨房的桌上，压着一张清单。对一对，东西都齐了吗？</small><br><br><b>炸酱面</b><br>☐ 六必居干黄酱　☐ 甜面酱　☐ 五花肉<br>☐ 黄瓜　☐ 豆芽　☐ 心里美萝卜（或白萝卜）　☐ 黄豆<br>☐ 宽面 / 手擀面　☐ 葱　☐ 姜　☐ 大蒜<br><br><b>蛋糕</b><br>☐ 鸡蛋　☐ 低筋面粉　☐ 白糖　☐ 牛奶　☐ 黄油<br>☐ 淡奶油　☐ 草莓<br>☐ 蜡烛 · <b>一根</b>　<small>（五次生日，只点一次。）</small><br><br><small>清单背面有一行小字：<i>\"两份。有人会陪你吃。\"</i></small>" },
     { type: "whisper", text: "回到 1414 E. 59th St.。<br><br>酱在锅里咕嘟咕嘟地冒泡，<br>烤箱里的蛋糕，正一点一点鼓起来。<br>满屋子，都是北京的味道。<br><br>你放下筷子的那一刻，<br>厨房里所有的钟，<br>同时停在了 11:24。<br><br>窗外，有什么东西轻轻敲了两下玻璃。<br><br>开庭了。" },
     { type: "jurySelect", strikes: 3,
       prompt: "天黑请闭眼。<br>八个陪审员里，混进了<b>三匹狼</b>。<br>你是预言家。可以<b>请走三个</b>。<br><small>助手替你验人。</small>",
@@ -542,7 +540,7 @@ const CHAPTERS = [
       fail: "不是这个。<br>你需要那张从 Death Alley 的门缝里拿到的纸。" },
     { type: "present", prompt: "X：<b>\"她去了芝加哥，就把家里忘了。\"</b><br><br>出示一件证物：",
       correct: "depo", alt: "exB", score: 1.5, altScore: 0.5,
-      success: "你把汤底摊开：<br>五个时区，五句生日快乐。<br>最先到的那一句，来自北京——她对着屏幕，吹了第一次蜡烛。<br><br>X 慢慢低下了头。<br>面具后面，好像有什么东西，轻轻抖了一下。",
+      success: "你把汤底摊开：<br>五个时区，五句生日快乐。<br>最先到的那一句，来自北京——那时芝加哥还是 23 号，她的家人，比谁都先等到了她的零点。<br><br>X 慢慢低下了头。<br>面具后面，好像有什么东西，轻轻抖了一下。",
       altText: "帖子在这里。可它证明不了你有没有想家。W 的证词会更有力。",
       fail: "这个帮不了你。" },
     { type: "award", flag: "card" }, { type: "award", flag: "cafe" }, { type: "award", flag: "scent" },
@@ -563,7 +561,6 @@ const CHAPTERS = [
     { type: "codeGive", text: "告诉助手：", code: "ch5_toAssistant" }
   ],
   assistant: [
-    { type: "geo", place: "market", text: "跟她一起，去 Chinatown 的 88 Marketplace。" },
     { type: "document", docTitle: "🔒 答案", html: `<dl class="lawlib"><dt>北京人最想念的那碗面</dt><dd>炸酱面</dd></dl>` },
     { type: "document", docTitle: "🔒 预言家的查验结果", html: `
 <dl class="lawlib">

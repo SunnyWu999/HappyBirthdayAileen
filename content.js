@@ -34,6 +34,8 @@ const CONFIG = {
   places: {
     plaza:  { name: "联邦广场 · 火烈鸟",      lat: 41.8788, lng: -87.6297, radius: 250 },
     tour:   { name: "71 E. Wacker · Hoyt's Tavern", lat: 41.8867, lng: -87.6252, radius: 250 },
+    strip:  { name: "The Strip Club 拍照亭",   lat: 41.9125, lng: -87.6777, radius: 200 },
+    guitar: { name: "Guitar Center · Lincoln Park", lat: 41.9303, lng: -87.6485, radius: 200 },
     tomb:   { name: "林肯公园南端 · Couch 墓", lat: 41.9132, lng: -87.6318, radius: 300 },
     vinyl:  { name: "Reckless Records",        lat: 41.9075, lng: -87.6735, radius: 500 },
     home:   { name: "1414 E. 59th St.",        lat: 41.7877, lng: -87.5911, radius: 200 }
@@ -102,6 +104,7 @@ const CLUES = {
   c9:  { to: "birds", title: "黄色的绒毛", text: "唱片架后面，有什么东西轻轻碰了你一下。<br>地上留下一小撮<b>黄色</b>的绒毛，软软的，像旧玩偶身上掉下来的。" },
   c10: { to: "birds", title: "\"第一个看见的\"", text: "X 在证人席上说：<br>\"她每天早上醒来，<b>第一个看见的</b>，就是我。\"<br>——镜子里的自己？" },
   c11: { to: "birds", title: "八号陪审员", text: "Iris 说：\"有些东西不会说话。<br>可它们记得你，也会一直等你回家。\"" },
+  c12: { to: "birds", title: "第四格", text: "拍照亭吐出来的照片条，第四格的角落里，<br>有<b>两个</b>小小的、模糊的影子。<br>也许只是显影液没干。" },
   r1:  { to: "ten", title: "小时候的日记", text: "日记里，小时候的你写过\"永远不长大\"。<br>X，会不会就是小时候的你？" },
   r2:  { to: "ten", title: "十八岁那晚的帖子", text: "\"18岁了，但我永远是个小孩。\"<br>X 说，那晚你又答应了他一次。" },
   r3:  { to: "sunny", title: "助手的暗号", text: "{assistant} 手里，总有你看不到的东西。<br>TA 是不是知道得太多了？" },
@@ -132,7 +135,7 @@ const TWIST = {
     { id: "plant", name: "一盆花", elim: "花不会在窗边等人，<br>也不会在协议上留下 ψ 形的印子。" },
     { id: "birds", name: "蛋清和蛋黄" }
   ],
-  reveal: "白色带一点蓝的绒毛，黄色的绒毛——是两种颜色的<b>羽毛</b>。<br>一把金色的小颗粒——是<b>小米</b>，是鸟食。<br>ψ ψ——是<b>鸟的脚印</b>。<br>窸窸窣窣——是<b>翅膀</b>。<br>肩膀旁边的两个小影子——是<b>停在你肩上</b>的它们。<br>\"每天醒来第一个看见的\"——是床边的<b>鸟笼</b>。<br>\"从没离开过那个家\"——它们一直在<b>北京</b>等你。<br><br>所有指向\"小孩\"的线索，都没有说谎。<br>只是那个小孩答应过的，<br>是它们。"
+  reveal: "白色带一点蓝的绒毛，黄色的绒毛——是两种颜色的<b>羽毛</b>。<br>一把金色的小颗粒——是<b>小米</b>，是鸟食。<br>ψ ψ——是<b>鸟的脚印</b>。<br>窸窸窣窣——是<b>翅膀</b>。<br>肩膀旁边的两个小影子、照片第四格里的两个小影子——是<b>一直跟着你</b>的它们。<br>\"每天醒来第一个看见的\"——是床边的<b>鸟笼</b>。<br>\"从没离开过那个家\"——它们一直在<b>北京</b>等你。<br><br>所有指向\"小孩\"的线索，都没有说谎。<br>只是那个小孩答应过的，<br>是它们。"
 };
 
 /* ---- 终章的四件实物（我送她的）---- */
@@ -445,10 +448,15 @@ const CHAPTERS = [
 
 /* =================== 第三章 · 唱片店 =================== */
 {
-  id: "ch3", title: "第三章", subtitle: "B 面", place: "Reckless Records · 1379 N. Milwaukee", pace: "ch3",
+  id: "ch3", title: "第三章", subtitle: "显影与 B 面", place: "拍照亭 · Reckless Records · Guitar Center", pace: "ch3",
   bg: [W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/1280px-Wicker_Park%2C_Chicago.jpg"), W("thumb/5/54/Wicker_Park%2C_Chicago.jpg/640px-Wicker_Park%2C_Chicago.jpg"), W("5/54/Wicker_Park%2C_Chicago.jpg")],
   counsel: [
-    { type: "postcard", no: 5, place: "MILWAUKEE AVE · 15:40", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
+    { type: "postcard", no: 5, place: "1702 N. DAMEN · 15:05", text: "去照一张相。<br><br>老式的那种。<br>按下去以后，要等好几分钟，<br>它才会在药水里，慢慢显出样子。<br><br>有些人也是这样——<br>要过很多年，<br>你才看得清他们是谁。", sign: "— X" },
+    { type: "geo", place: "strip", text: "去 Wicker Park 的复古拍照亭：The Strip Club Photobooth Studio（1702 N. Damen Ave）。" },
+    { type: "whisper", text: "闪光灯亮了四次。<br><br>你们站在机器外面，等它吐出那一条湿漉漉的相纸。<br>第一格，你在笑。第二格，她在笑。<br>第三格，你们笑成一团。<br><br>第四格的角落里，<br>好像多了点什么。" },
+    { type: "clue", id: "c12" },
+    { type: "photo", key: "strip", prompt: "把显影出来的那一条照片拍下来，<br>封进物证袋。" },
+    { type: "postcard", no: 6, place: "MILWAUKEE AVE · 15:40", text: "去唱片店。<br><br>每一张唱片，<br>都有一面没人听。<br><br>我在 <b>B 面</b>等你。", sign: "— X" },
     { type: "geo", place: "vinyl", text: "去 Milwaukee Avenue 上那家唱片店。" },
     { type: "gate", text: "唱片封套里夹着一张手写卡片。<br>是你在日本的一家 livehouse 里说过的话：<br><br><i>\"我本来是一个＿＿＿，<br>遇到你们，我们组成了旋律，<br>因此我不再孤独。\"</i>", accept: ["音符", "一个音符"],
       success: "音符。<br><br>店里的音乐停了一拍。<br>像是有谁，在认真听。" },
@@ -470,16 +478,21 @@ const CHAPTERS = [
     { type: "clue", id: "c9" },
     { type: "fragment", ids: [12, 13, 14] },
     { type: "photo", key: "ch3", prompt: "挑一张唱片，拍下它的 B 面。" },
+    { type: "postcard", no: 7, place: "2633 N. HALSTED · 16:40", text: "最后，去一个满墙都是吉他的地方。<br><br>挑一把。<br>弹一首。<br><br>你知道是哪一首。<br>第一首是它，最后一首也是它。", sign: "— X" },
+    { type: "geo", place: "guitar", text: "去 Lincoln Park 的 Guitar Center（2633 N. Halsted St）。" },
+    { type: "note", title: "试琴", text: "挑一把你喜欢的吉他，请店员让你试一试。<br><br>☐ 弹一段《鲜花》给 {assistant} 听<br>☐ 找到店里最贵的那一把，看一眼就好<br>☐ 记住你最喜欢的那把，是什么颜色" },
+    { type: "whisper", text: "琴弦停下来的时候，店里忽然很安静。<br><br>墙上几百把吉他，<br>像是一起屏住了呼吸。<br><br>你想起那句话：<br>你本来是一个音符。<br>遇到他们，组成了旋律。<br><br>今天，你又多了一个听众——<br>只是你还不知道，是谁。" },
     { type: "document", docTitle: "调查笔记 · 第三章", cls: "notes", html: `
 <p>你把两小撮绒毛并排放在桌上：一撮白里带蓝，一撮黄。</p>
 <p>歪歪扭扭的字。小孩画的叉子。"很小，很会等"。一把金色的小颗粒当信物。日记里的"永远不长大"。</p><p>你越来越觉得：X，是一个小孩。</p>
 <p>X 提出的条件，也很奇怪：它不要钱，不要道歉，只要你<b>每年生日，做一件从没做过的事</b>。</p>
 <p>一个真正想报复你的人，不会提这种条件。</p>
-<p class="doc-footnote">今晚开庭。X 会亲自上证人席。</p>` },
-    { type: "codeGive", text: "去吃晚饭吧。把那首歌的名字告诉助手：", code: "ch3_toAssistant" }
+<p class="doc-footnote">回家。今晚开庭，X 会亲自上证人席。</p>` },
+    { type: "codeGive", text: "回家吧。把你弹的那首歌的名字告诉助手：", code: "ch3_toAssistant" }
   ],
   assistant: [
-    { type: "geo", place: "vinyl", text: "跟她一起，去唱片店。" },
+    { type: "geo", place: "strip", text: "跟她一起，去 Wicker Park 的复古拍照亭（1702 N. Damen Ave）。" },
+    { type: "geo", place: "vinyl", text: "拍完照，往南走去唱片店。" },
     { type: "document", docTitle: "🔒 今天的答案", html: `
 <dl class="lawlib">
 <dt>"我本来是一个＿＿"</dt><dd>音符</dd>
@@ -488,6 +501,7 @@ const CHAPTERS = [
 </dl>` },
     { type: "gate", text: "输入她报给你的<b>身份</b>：", code: "ch3_strength" },
     { type: "evalMemo" },
+    { type: "geo", place: "guitar", text: "最后一起去 Guitar Center（2633 N. Halsted St）。她会弹一段《鲜花》给你听。" },
     { type: "gate", text: "那首歌的名字：", code: "ch3_toAssistant" }
   ]
 },
@@ -497,7 +511,7 @@ const CHAPTERS = [
   id: "ch4", title: "第四章", subtitle: "天黑请闭眼", place: "1414 E. 59th St. · 炸酱面与蛋糕", pace: "ch4",
   bg: [W("thumb/3/3b/Chicago_River_night.jpg/1280px-Chicago_River_night.jpg"), W("thumb/3/3b/Chicago_River_night.jpg/640px-Chicago_River_night.jpg"), W("3/3b/Chicago_River_night.jpg"), W("thumb/1/12/CTA_Night.jpg/1280px-CTA_Night.jpg"), W("thumb/1/12/CTA_Night.jpg/640px-CTA_Night.jpg"), W("1/12/CTA_Night.jpg")],
   counsel: [
-    { type: "postcard", no: 6, place: "THE KITCHEN · 18:00", text: "回家吧。<br><br>北京人想家的时候，<br>会给自己做一碗面。<br>过生日的人，<br>应该有一个自己烤的蛋糕。<br><br>今晚，两样都由你来做。<br>做完，我们开庭。", sign: "— X" },
+    { type: "postcard", no: 8, place: "THE KITCHEN · 18:00", text: "回家吧。<br><br>北京人想家的时候，<br>会给自己做一碗面。<br>过生日的人，<br>应该有一个自己烤的蛋糕。<br><br>今晚，两样都由你来做。<br>做完，我们开庭。", sign: "— X" },
     { type: "gate", text: "餐巾纸上，有人用番茄酱写了一行字：<br><br><i>\"北京人最想念的那碗面，叫什么？\"</i>", accept: ["炸酱面", "老北京炸酱面", "ZHAJIANGMIAN"],
       success: "炸酱面。<br>黄瓜丝、豆芽、心里美萝卜……<br>一碗面，是一座城。" },
     { type: "fragment", ids: [15, 16] },
@@ -591,12 +605,12 @@ const CHAPTERS = [
   id: "ch5", title: "终章", subtitle: "白狐面具", place: "1414 E. 59th St. · 厨房", pace: "ch5",
   bg: [W("thumb/1/16/Logan_Square_%287979593889%29.jpg/1280px-Logan_Square_%287979593889%29.jpg"), W("thumb/1/16/Logan_Square_%287979593889%29.jpg/640px-Logan_Square_%287979593889%29.jpg"), W("1/16/Logan_Square_%287979593889%29.jpg"), W("thumb/7/70/Illinois_Centennial_Memorial_Column.jpg/1280px-Illinois_Centennial_Memorial_Column.jpg"), W("thumb/7/70/Illinois_Centennial_Memorial_Column.jpg/640px-Illinois_Centennial_Memorial_Column.jpg"), W("7/70/Illinois_Centennial_Memorial_Column.jpg")],
   counsel: [
-    { type: "postcard", no: 7, place: "THE KITCHEN · 21:00", text: "面吃完了吗？<br>碗洗了吗？<br><br>窗外起风了。<br>我就在窗外。<br><br>把灯关掉一盏。<br>我会摘下面具。", sign: "— X" },
+    { type: "postcard", no: 9, place: "THE KITCHEN · 21:00", text: "面吃完了吗？<br>碗洗了吗？<br><br>窗外起风了。<br>我就在窗外。<br><br>把灯关掉一盏。<br>我会摘下面具。", sign: "— X" },
     { type: "whisper", text: "你关掉了一盏灯。<br><br>厨房暗下来。<br>窗玻璃上，慢慢浮出一张白狐面具。<br><br>它就停在窗台上。<br>一动不动。" },
     { type: "deduce" },
     { type: "narration", title: "面具之下", text: "X 抬起手。<br>不——是抬起了<b>两只</b>翅膀。<br><br>白狐面具从窗台上滑落，<br>在地板上转了一圈，停住。<br><br>面具后面，什么人也没有。<br><br>只有两只小鸟。<br>一只蓝白色，一只黄色。<br>挨在一起，歪着头，看着你。<br><br>像很多年前的那个夏天，<br>你第一次把它们带回家时那样。<br><br><b>{plaintiff}</b>。" },
     { type: "feathers", text: "{plaintiffMessage}" },
-    { type: "postcard", no: 20, place: "THE LAST LETTER", text: "我们一共写了二十封信。<br>你只收到了七封。<br><br>剩下的十三封，没有寄出去。<br>因为它们不用寄——<br>那是你和朋友们，一起过的日子。<br><br>你离开北京以后，<br>我们每天早上都停在窗边，<br>等那扇门打开。<br><br>它没有开。<br>可我们听说，你过得很好。<br><br>那就好。", sign: "— 蛋清 & 蛋黄" },
+    { type: "postcard", no: 20, place: "THE LAST LETTER", text: "我们一共写了二十封信。<br>你只收到了九封。<br><br>剩下的十一封，没有寄出去。<br>因为它们不用寄——<br>那是你和朋友们，一起过的日子。<br><br>你离开北京以后，<br>我们每天早上都停在窗边，<br>等那扇门打开。<br><br>它没有开。<br>可我们听说，你过得很好。<br><br>那就好。", sign: "— 蛋清 & 蛋黄" },
     { type: "fragment", ids: [18, 19, 20] },
     { type: "twenty" },
     { type: "cloze", title: "还原真相", prompt: "最后一个疑点：它们为什么偏偏挑今天？<br>把这个案子，从头还原一遍。<br><small>先点一个空格，再点下面的词。</small>",
